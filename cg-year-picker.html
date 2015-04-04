@@ -1,0 +1,135 @@
+<link href="../polymer/polymer.html" rel="import">
+
+<polymer-element name="cg-year-picker" attributes="datetime">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                position: relative;
+                height: 250px;
+                width: 300px;
+                font-family:sans-serif;
+            }
+
+            #container{
+                height: 100%;
+                width: 100%;
+                padding: 0px 9px;
+                box-sizing: border-box;
+            }
+
+            .years {
+                overflow:auto;
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+                align-content: stretch;
+                height: 210px;
+            }
+
+            .year {
+                width: calc(32% - 6px);
+                text-align: center;
+                margin: 3px;
+                font-size: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color:rgba(0, 0, 0, 0.870588);
+            }
+
+            .year[data-year]{
+                cursor: pointer;
+            }
+
+            .year span{
+                display: block;
+                width: 64px;
+                height: 64px;
+                line-height: 64px;
+            }
+
+            .year.selected span{
+                background-color: #009688;
+                color: white;
+                border-radius: 100%;
+            }
+
+            .year.title{
+                padding-top: 0px;
+                padding-bottom: 4px;
+                font-weight: bold;
+                color: rgba(0,0,0,.6);
+                cursor: default;
+            }
+
+        </style>
+        <div on-tap="{{_selectYear}}" id="container">
+            <div data="{{year}}">
+                <div class="years" id="scroller">
+                    <template repeat="{{ year in _years }}">
+                        <template if="{{year}}">
+                            <div class="year {{ { selected : year == _currentYear} | tokenList }}" data-year="{{year}}">
+                                <span>{{year}}</span>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer('cg-year-picker', {
+            datetime: new Date(),
+            min:1900,
+            max:2100,
+
+            _years:[],
+            _currentYear : 0,
+            _renderYears: function(){
+                var years = [];
+                for(var i = this.min; i <= this.max; i++){
+                    years.push(i);
+                }
+                this._years = years;
+                console.log("endering years")
+            },
+            _scrollToSelection:function(){
+                var selected = this.$.container.querySelector("div.year[data-year='" + this._currentYear + "']");
+                if(selected) {
+                    var scrollTop = this.$.scroller.scrollTop;
+                    var scrollBottom = scrollTop + this.$.scroller.clientHeight;
+                    var selectedTop = selected.offsetTop;
+                    var selectedBottom = selectedTop + selected.clientHeight;
+                    // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
+                    if(
+                        (scrollTop > selectedTop && selectedBottom < scrollBottom)
+                    ||  (scrollBottom < selectedBottom && selectedTop > scrollTop)
+                    ||  (scrollTop > selectedTop && selectedBottom > scrollBottom)) {
+                        console.log("selected: " + selected.dataset.year + " - " + selected.offsetTop)
+                        this.$.scroller.scrollTop = selected.offsetTop - this.$.scroller.clientHeight/2 + selected.clientHeight/2;
+                    }
+                }
+            },
+            _selectYear: function(e){
+                var data = e.path[1].dataset.year ? e.path[1].dataset : e.path[0].dataset;
+                var year = data.year;
+                if(year){
+                    this.datetime = new Date(year, this._getDateTime().getMonth(), this._getDateTime().getDate(), this._getDateTime().getHours(), this._getDateTime().getMinutes(), this._getDateTime().getSeconds());
+                    this.fire("selection-changed");
+                }
+            },
+            _getDateTime:function(){
+                return this.datetime || new Date();
+            },
+            datetimeChanged: function(){
+                this._currentYear = this._getDateTime().getFullYear();
+                this._scrollToSelection();
+            },
+            ready: function(){
+                this.datetimeChanged();
+                this._renderYears();
+            }
+        });
+    </script>
+</polymer-element>

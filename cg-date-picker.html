@@ -1,5 +1,10 @@
 <link href="../polymer/polymer.html" rel="import">
-
+<link href="cg-year-picker.html" rel="import">
+<link href="../core-icon-button/core-icon-button.html" rel="import">
+<link href="../paper-button/paper-button.html" rel="import">
+<link href="../paper-item/paper-item.html" rel="import">
+<link href="../paper-dropdown/paper-dropdown.html" rel="import">
+<link href="../core-pages/core-pages.html" rel="import">
 <polymer-element name="cg-date-picker" attributes="datetime locale startDayOfWeek">
     <template>
         <style>
@@ -34,6 +39,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                color:rgba(0, 0, 0, 0.870588);
             }
 
             .day[data-date]{
@@ -66,29 +72,46 @@
                 font-size: 1.2rem;
                 color: rgba(0,0,0,.73);
             }
+            .heading-month {
+                text-transform: none!important;
+            }
         </style>
         <div on-tap="{{_selectDate}}" id="container">
             <div class="month" data-month="{{month.number}}" data-year="{{month.year}}">
                 <section layout horizontal center>
                     <core-icon-button icon="chevron-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
-                    <div flex class="monthname">{{month.name}}</div>
+                    <div flex layout horizontal class="monthname">
+                        <paper-button id="monthBtn" class="monthbtn" on-tap="{{_monthPicker}}"><span class="heading-month">{{month.name}}</span>
+                            <paper-dropdown class="no-padding" layered id="monthDD" relatedTarget="{{$.monthBtn}}">
+                                <div class="menu">
+                                    <template repeat="{{_months}}">
+                                        <paper-item data-month="{{n}}" on-tap="{{_changeMonth}}">{{name}}</paper-item>
+                                    </template>
+                                </div>
+                            </paper-dropdown>
+                        </paper-button>
+                        <paper-button id="yearBtn" class="yearbtn" on-tap="{{_yearPicker}}"><span class="heading-year">{{month.year}}</span></paper-button>
+                    </div>
                     <core-icon-button icon="chevron-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
                 </section>
-                <div class="days">
-                    <template repeat="{{name in _weekDayNames}}">
-                        <div class="day title">{{name}}</div>
-                    </template>
-                    <template repeat="{{ day in month.days }}">
-                        <template if="{{!day}}">
-                            <div class="day"></div>
+                <core-pages id="calendarPages" selected="0">
+                    <div class="days" id="datePicker">
+                        <template repeat="{{name in _weekDayNames}}">
+                            <div class="day title">{{name}}</div>
                         </template>
-                        <template if="{{day}}">
-                            <div class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
-                                <span>{{day.day}}</span>
-                            </div>
+                        <template repeat="{{ day in month.days }}">
+                            <template if="{{!day}}">
+                                <div class="day"></div>
+                            </template>
+                            <template if="{{day}}">
+                                <div class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
+                                    <span>{{day.day}}</span>
+                                </div>
+                            </template>
                         </template>
-                    </template>
-                </div>
+                    </div>
+                    <cg-year-picker id="yearPicker" datetime="{{_pickerDatetime}}"></cg-year-picker>
+                </core-pages>
             </div>
         </div>
     </template>
@@ -102,10 +125,27 @@
             _currentYear : 0,
             _currentMonth : 0,
             _currentDay : 0,
-            _month: [],
+            _months: [],
             _weekDayNames: [],
             _nonNumericDates: false,
             _intl: {},
+            _yearPicker:function(e){
+                this.$.calendarPages.selected = 1;
+                this.$.yearBtn.disable();
+            },
+            _monthPicker:function(e) {
+                if (this.$.calendarPages.selected != 0) {
+                    this.$.calendarPages.selected = 0;
+                    this.$.yearBtn.enable();
+                }else{
+                    this.$.monthDD.toggle();
+                }
+            },
+            _changeMonth:function(e){
+                this.datetime = new Date(this._pickerDatetime.getFullYear(), e.target.dataset.month, this._pickerDatetime.getDate(), this._getDateTime().getHours(), this._getDateTime().getMinutes(), this._getDateTime().getSeconds());
+                this.$.monthDD.toggle();
+                this.fire("selection-changed");
+            },
             _renderMonth: function(){
                 var month = {
                     days: [],
@@ -115,7 +155,7 @@
                 };
                 var date = new Date(month.year, month.number, 1);
                 var startPoint = (date.getDay() - this.startDayOfWeek + 7) % 7;
-                month.name = Intl.DateTimeFormat(this.locale, {month: 'long', year: 'numeric' }).format(date);
+                month.name = Intl.DateTimeFormat(this.locale, {month: 'long'}).format(date);
                 var date = new Date(month.year, month.number + 1, 0);
                 var endPoint = date.getDate();
                 month.days = new Array(startPoint);
@@ -149,6 +189,21 @@
             localeChanged: function(){
                 this._intl = {};
                 this._intl.day = Intl.DateTimeFormat(this.locale, {day: 'numeric' }).format;
+                var _weekDayNames = [];
+                for(var i = this.startDayOfWeek - 1; i < this.startDayOfWeek + 6; i++){
+                    var date = new Date(2000, 1, i, 0, 0, 0);
+                    _weekDayNames.push(new Intl.DateTimeFormat(this.locale, {weekday:'narrow'}).format(date));
+                }
+                this._weekDayNames = _weekDayNames;
+                var _months = [];
+                for(var i = 0; i < 12; i++){
+                    var date = new Date(2000, i, 1, 0, 0, 0);
+                    _months.push({
+                        name:new Intl.DateTimeFormat(this.locale, {month:'long'}).format(date),
+                        n:i
+                    });
+                }
+                this._months = _months;
             },
             datetimeChanged: function(){
                 this._pickerDatetime = this._getDateTime();
@@ -163,13 +218,14 @@
                 this._renderMonth();
             },
             ready: function(){
-                this._weekDayNames = [];
-                for(var i = this.startDayOfWeek - 1; i < this.startDayOfWeek + 6; i++){
-                    var date = new Date(2000, 1, i, 0, 0, 0);
-                    this._weekDayNames.push(new Intl.DateTimeFormat(this.locale, {weekday:'narrow'}).format(date));
-                }
                 this.localeChanged();
                 this.datetimeChanged();
+            },
+            domReady:function(){
+                this.$.yearPicker.addEventListener('selection-changed', function(e){
+                    this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), this._pickerDatetime.getDate(), this._getDateTime().getHours(), this._getDateTime().getMinutes(), this._getDateTime().getSeconds());
+                    this.fire("selection-changed");
+                }.bind(this));
             }
         });
     </script>

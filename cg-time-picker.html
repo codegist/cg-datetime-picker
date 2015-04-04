@@ -35,15 +35,15 @@
         </style>
         <section horizontal layout>
             <div flex layout vertical>
-                <core-icon-button vertical layout center icon="arrow-drop-up" target="hours" step="1" add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <core-icon-button vertical layout center icon="arrow-drop-up" data-target="hours" data-step="1" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
                 <input id="hours" readonly type="number" min="0" max="23" value="{{_hours}}" class="picker"/>
-                <core-icon-button vertical layout center icon="arrow-drop-down" target="hours" step="1" add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <core-icon-button vertical layout center icon="arrow-drop-down" data-target="hours" data-step="1" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
             </div>
             <div class="divider" horizontal layout center>:</div>
             <div flex layout vertical>
-                <core-icon-button vertical layout center icon="arrow-drop-up" target="minutes" step="{{minuteStep}}" add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <core-icon-button vertical layout center icon="arrow-drop-up" data-target="minutes" data-step="{{minuteStep}}" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
                 <input id="minutes" readonly type="number" min="{{_minuteLimitDown}}" max="{{_minuteLimitUp}}" value="{{_minutes}}" class="picker"/>
-                <core-icon-button vertical layout center icon="arrow-drop-down" target="minutes" step="{{minuteStep}}" add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <core-icon-button vertical layout center icon="arrow-drop-down" data-target="minutes" data-step="{{minuteStep}}" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
             </div>
         </section>
         <!--<section horizontal end-justified layout>-->
@@ -77,7 +77,6 @@
                 };
             },
             datetimeChanged:function(){
-                console.log("datetimeChanged "  + this.datetime)
                 this._hours = this._getDatetime().getHours();
 //                this._hours = this._get12BaseHour(this.datetime);
                 if(this.adjustTime) {
@@ -87,15 +86,15 @@
                 }
             },
             _add:function(e){
-                var step = Number(e.target.getAttribute("step"));
-                var add = Number(e.target.getAttribute("add"));
-                var picker =  this._pickers[e.target.getAttribute("target")];
+                var step = Number(e.target.dataset.step);
+                var add = Number(e.target.dataset.add);
+                var picker =  this._pickers[e.target.dataset.target];
                 var limitUp = Number(picker.getAttribute("max"));
                 var limitDown = Number(picker.getAttribute("min"));
                 var newVal = this._adjustValueFor(picker.value, step, limitUp, limitDown, add);
 
                 this.datetime = this.datetime || new Date();
-                switch(e.target.getAttribute("target")){
+                switch(e.target.dataset.target){
                     case "hours":
                         this.datetime.setHours(newVal);
 //                        this.datetime.setHours(newVal + this._24AMPMOffset(newVal));
