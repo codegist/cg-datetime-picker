@@ -33,7 +33,6 @@
                 width: 1.5rem;
             }
         </style>
-
         <section horizontal layout>
             <div flex layout vertical>
                 <core-icon-button vertical layout center icon="arrow-drop-up" target="hours" step="1" add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
@@ -78,10 +77,14 @@
                 };
             },
             datetimeChanged:function(){
-                console.log("time picker date changed " + this.datetime)
-                this._hours = this.datetime.getHours();
+                console.log("datetimeChanged "  + this.datetime)
+                this._hours = this._getDatetime().getHours();
 //                this._hours = this._get12BaseHour(this.datetime);
-                this._minutes = this.datetime.getMinutes();
+                if(this.adjustTime) {
+                    this._minutes = this._adjustValueFor(this._getDatetime().getMinutes(), this.minuteStep, this._minuteLimitDown, this._minuteLimitUp, 0);
+                }else{
+                    this._minutes = this._getDatetime().getMinutes();
+                }
             },
             _add:function(e){
                 var step = Number(e.target.getAttribute("step"));
@@ -91,6 +94,7 @@
                 var limitDown = Number(picker.getAttribute("min"));
                 var newVal = this._adjustValueFor(picker.value, step, limitUp, limitDown, add);
 
+                this.datetime = this.datetime || new Date();
                 switch(e.target.getAttribute("target")){
                     case "hours":
                         this.datetime.setHours(newVal);
@@ -113,14 +117,19 @@
                 return newVal;
             },
             adjustTimeChanged:function(){
-                if(this.datetime == null){
-                    return;
-                }
-                this.datetime.setMinutes(this._adjustValueFor(this.$.minutes.value, this.minuteStep, this._minuteLimitDown, this._minuteLimitUp, 0));
-                this._refreshDateTime();
+                console.log("adjustTimeChanged");
+                this.datetimeChanged();
+            },
+            _getDatetime:function(){
+                return this.datetime || new Date();
             },
             _refreshDateTime:function(){
+                console.log("_refreshDateTime")
                 this.datetime = new Date(this.datetime.toISOString());
+            },
+            ready:function(){
+                console.log("ready");
+                this.datetimeChanged();
             }
 //            _toggleAMPM:function(e){
 //                this.datetime.setHours((this.datetime.getHours() + 12 * (this._isAM() ? 1 : -1)) % 24);

@@ -134,16 +134,16 @@
                 var month = data.month;
                 var year = data.year;
                 if(day && month && year){
-                    this.datetime = this._pickerDatetime = new Date(year, month, day, this.datetime.getHours(), this.datetime.getMinutes(), this.datetime.getSeconds());
+                    this.datetime = this._pickerDatetime = new Date(year, month, day, this._getDateTime().getHours(), this._getDateTime().getMinutes(), this._getDateTime().getSeconds());
                     this.fire("selection-changed");
                 }
             },
             _previousMonth:function(){
-                var day = this.datetime.getMonth() == this._pickerDatetime.getMonth() - 1 ? this.datetime.getDate() : 1;
+                var day = this._getDateTime().getMonth() == this._pickerDatetime.getMonth() - 1 ? this._getDateTime().getDate() : 1;
                 this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() - 1, day);
             },
             _nextMonth:function(){
-                var day = this.datetime.getMonth() == this._pickerDatetime.getMonth() + 1 ? this.datetime.getDate() : 1;
+                var day = this._getDateTime().getMonth() == this._pickerDatetime.getMonth() + 1 ? this._getDateTime().getDate() : 1;
                 this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() + 1, day);
             },
             localeChanged: function(){
@@ -151,8 +151,10 @@
                 this._intl.day = Intl.DateTimeFormat(this.locale, {day: 'numeric' }).format;
             },
             datetimeChanged: function(){
-                this._pickerDatetime = this.datetime;
-                this._pickerDatetimeChanged();
+                this._pickerDatetime = this._getDateTime();
+            },
+            _getDateTime:function(){
+                return this.datetime || new Date();
             },
             _pickerDatetimeChanged: function(){
                 this._currentYear = this._pickerDatetime.getFullYear();

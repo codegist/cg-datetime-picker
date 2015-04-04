@@ -10,17 +10,14 @@
                 padding:0px;
             }
         </style>
-        <div horizontal layout>
-            <paper-input-decorator flex label="{{label}}" floatingLabel error="{{error}}" autoValidate>
-                <div horizontal layout>
-                    <input flex is="core-input" required  value="{{_datetimeFormatted}}">
-                    <paper-icon-button icon="menu" class="date-picker" on-tap="{{_openDialog}}" relative noink>
-                        <cg-datetime-picker-dialog id="picker" datetime="{{_pickerDatetime}}"></cg-datetime-picker-dialog>
-                    </paper-icon-button>
-                </div>
-            </paper-input-decorator>
-
-        </div>
+        <paper-input-decorator flex label="{{label}}" floatingLabel error="{{error}}" autoValidate>
+            <div horizontal layout>
+                <input flex is="core-input" required  value="{{_datetimeFormatted}}">
+                <paper-icon-button icon="menu" class="date-picker" on-tap="{{_openDialog}}" relative noink>
+                    <cg-datetime-picker-dialog id="picker" datetime="{{_pickerDatetime}}"></cg-datetime-picker-dialog>
+                </paper-icon-button>
+            </div>
+        </paper-input-decorator>
     </template>
     <script>
         Polymer('cg-datetime-input', {
@@ -38,11 +35,10 @@
             _datetimeFormatted:null,
             domReady:function(){
                 this.$.picker.addEventListener('datetime-changed', function(e){
-                    this.datetime = moment(e.detail.toISOString(), moment.ISO_8601);
+                    this.datetime = moment(e.detail.toISOString(), moment.ISO_8601).toISOString();
                 }.bind(this));
             },
             _openDialog: function() {
-                console.log("INPUT datetime " + this.datetime)
                 this.datetimeChanged();
                 this.$.picker.open();
             },
