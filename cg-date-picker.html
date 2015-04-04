@@ -1,0 +1,174 @@
+<link href="../polymer/polymer.html" rel="import">
+
+<polymer-element name="cg-date-picker" attributes="datetime locale startDayOfWeek">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                position: relative;
+                height: 250px;
+                width: 300px;
+                font-family:sans-serif;
+            }
+
+            #container{
+                height: 100%;
+                width: 100%;
+                padding: 0px 9px;
+                box-sizing: border-box;
+            }
+
+            .days{
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+                align-content: stretch;
+                min-height: 210px;
+            }
+
+            .day{
+                width: calc(14% - 6px);
+                text-align: center;
+                margin: 3px;
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .day[data-date]{
+                cursor: pointer;
+            }
+
+            .day span{
+                display: block;
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+            }
+
+            .day.selected span{
+                background-color: #009688;
+                color: white;
+                border-radius: 100%;
+            }
+
+            .day.title{
+                padding-top: 0px;
+                padding-bottom: 4px;
+                font-weight: bold;
+                color: rgba(0,0,0,.6);
+                cursor: default;
+            }
+
+            .monthname{
+                text-align: center;
+                font-size: 1.2rem;
+                color: rgba(0,0,0,.73);
+            }
+        </style>
+        <div on-tap="{{_selectDate}}" id="container">
+            <div class="month" data-month="{{month.number}}" data-year="{{month.year}}">
+                <section layout horizontal center>
+                    <core-icon-button icon="chevron-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
+                    <div flex class="monthname">{{month.name}}</div>
+                    <core-icon-button icon="chevron-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
+                </section>
+                <div class="days">
+                    <template repeat="{{name in _weekDayNames}}">
+                        <div class="day title">{{name}}</div>
+                    </template>
+                    <template repeat="{{ day in month.days }}">
+                        <template if="{{!day}}">
+                            <div class="day"></div>
+                        </template>
+                        <template if="{{day}}">
+                            <div class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
+                                <span>{{day.day}}</span>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer('cg-date-picker', {
+            datetime: new Date(),
+            locale: undefined,
+            startDayOfWeek: 1,
+
+            _pickerDatetime :null,
+            _currentYear : 0,
+            _currentMonth : 0,
+            _currentDay : 0,
+            _month: [],
+            _weekDayNames: [],
+            _nonNumericDates: false,
+            _intl: {},
+            _renderMonth: function(){
+                var month = {
+                    days: [],
+                    name: "",
+                    number: this._pickerDatetime.getMonth(),
+                    year: this._pickerDatetime.getFullYear()
+                };
+                var date = new Date(month.year, month.number, 1);
+                var startPoint = (date.getDay() - this.startDayOfWeek + 7) % 7;
+                month.name = Intl.DateTimeFormat(this.locale, {month: 'long', year: 'numeric' }).format(date);
+                var date = new Date(month.year, month.number + 1, 0);
+                var endPoint = date.getDate();
+                month.days = new Array(startPoint);
+                for(var i = 1; i <= endPoint; i++){
+                    var thisDate = new Date(month.year, month.number, i);
+                    month.days.push({
+                        n:i,
+                        day: this._intl.day(thisDate)
+                    });
+                }
+                this.month = month;
+            },
+            _selectDate: function(e){
+                var data = e.path[1].dataset.date ? e.path[1].dataset : e.path[0].dataset;
+                var day = data.date;
+                var month = data.month;
+                var year = data.year;
+                if(day && month && year){
+                    this.datetime = this._pickerDatetime = new Date(year, month, day, this.datetime.getHours(), this.datetime.getMinutes(), this.datetime.getSeconds());
+                    this.fire("selection-changed");
+                }
+            },
+            _previousMonth:function(){
+                var day = this.datetime.getMonth() == this._pickerDatetime.getMonth() - 1 ? this.datetime.getDate() : 1;
+                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() - 1, day);
+            },
+            _nextMonth:function(){
+                var day = this.datetime.getMonth() == this._pickerDatetime.getMonth() + 1 ? this.datetime.getDate() : 1;
+                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() + 1, day);
+            },
+            localeChanged: function(){
+                this._intl = {};
+                this._intl.day = Intl.DateTimeFormat(this.locale, {day: 'numeric' }).format;
+            },
+            datetimeChanged: function(){
+                this._pickerDatetime = this.datetime;
+                this._pickerDatetimeChanged();
+            },
+            _pickerDatetimeChanged: function(){
+                this._currentYear = this._pickerDatetime.getFullYear();
+                this._currentMonth = this._pickerDatetime.getMonth();
+                this._currentDay = this._pickerDatetime.getDate();
+                this._renderMonth();
+            },
+            ready: function(){
+                this._weekDayNames = [];
+                for(var i = this.startDayOfWeek - 1; i < this.startDayOfWeek + 6; i++){
+                    var date = new Date(2000, 1, i, 0, 0, 0);
+                    this._weekDayNames.push(new Intl.DateTimeFormat(this.locale, {weekday:'narrow'}).format(date));
+                }
+                this.localeChanged();
+                this.datetimeChanged();
+            }
+        });
+    </script>
+</polymer-element>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>cg-datetime-input Demo</title>
+    <link rel="import" href="cg-datetime-input.html">
+    <link rel="import" href="cg-datetime-picker.html">
+    <link rel="import" href="cg-datetime-picker-dialog.html">
+    <link rel="import" href="cg-time-picker.html">
+    <link rel="import" href="cg-date-picker.html">
+</head>
+
+<body unresolved fullbleed layout vertical center center-justified>
+
+<template id="sandbox" is="auto-binding">
+    <section>
+        <input is="core-input" required value="{{myObject.datetime}}">
+        <cg-datetime-input datetime="{{myObject.datetimestring1}}" label="Some Label" error="Error!"></cg-datetime-input>
+    </section>
+    <section>
+        <input is="core-input" required value="{{myObject.datetime2}}">
+        <cg-datetime-input datetime="{{myObject.datetimestring2}}" label="Another Label" error="Error!"></cg-datetime-input>
+    </section>
+    <section>
+        <input is="core-input" required value="{{myObject.datetime3}}">
+        <cg-datetime-input datetime="{{myObject.datetimestring3}}" label="Another Label" error="Error!"></cg-datetime-input>
+    </section>
+    <section>
+        <input is="core-input" required value="{{myObject.datetime4}}">
+        <cg-datetime-input datetime="{{myObject.datetimestring4}}" label="Another Label" error="Error!"></cg-datetime-input>
+    </section>
+
+    <!--<section>-->
+        <!--<div layout horizontal>-->
+            <!--<div>-->
+                <!--<input is="core-input" required value="{{myObject.datetime}}">-->
+            <!--</div>-->
+            <!--<cg-time-picker datetime="{{myObject.datetime}}"></cg-time-picker>-->
+        <!--</div>-->
+    <!--</section>-->
+    <!--<section>-->
+        <!--<div layout horizontal>-->
+            <!--<div>-->
+                <!--<input is="core-input" required value="{{myObject.datetime}}">-->
+            <!--</div>-->
+            <!--<cg-datetime-picker datetime="{{myObject.datetime}}"></cg-datetime-picker>-->
+        <!--</div>-->
+    <!--</section>-->
+    <section>
+        <div layout horizontal>
+            <div>
+                <input is="core-input" required value="{{myObject.datetime}}">
+            </div>
+            <cg-date-picker datetime="{{myObject.datetime}}"></cg-date-picker>
+        </div>
+    </section>
+    <!--<section>-->
+        <!--<div layout horizontal>-->
+            <!--<div>Date time null</div>-->
+            <!--<div>-->
+                <!--<input is="core-input" required value="{{myObject.datetimenull}}">-->
+            <!--</div>-->
+            <!--<cg-datetime-picker datetime="{{myObject.datetimenull}}"></cg-datetime-picker>-->
+        <!--</div>-->
+    <!--</section>-->
+    <!--<section>-->
+        <!--<div layout horizontal>-->
+            <!--<div>Dialog</div>-->
+            <!--<cg-datetime-input flex label="Some Date" datetime="{{myObject.datetimestring}}"/>-->
+        <!--</div>-->
+    <!--</section>-->
+</template>
+
+<script>
+    window.addEventListener('template-bound', function(){
+        var sandbox = document.getElementById('sandbox');
+
+        sandbox.myObject = {
+            datetime:new Date(),
+            datetimenull:null,
+            datetimestring1:"2016-02-24T13:24:00.000Z",
+            datetimestring2:null,
+            datetimestring3:undefined,
+            datetimestring4:"dsfds"
+        }
+    });
+</script>
+
+</body>
+</html>

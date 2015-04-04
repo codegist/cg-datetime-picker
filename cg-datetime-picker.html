@@ -1,0 +1,57 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="cg-time-picker.html">
+<link rel="import" href="cg-date-picker.html">
+<script src="../momentjs/min/moment-with-locales.min.js"></script>
+
+<polymer-element name="cg-datetime-picker" attributes="datetime label adjustTime">
+    <template>
+        <div horizontal layout>
+            <cg-date-picker id="datePicker" datetime="{{_pickerDate}}"></cg-date-picker>
+            <div style="width:20px"></div>
+            <cg-time-picker id="timePicker" vertical layout center datetime="{{_pickerDate}}" adjustTime="{{adjustTime}}"></cg-time-picker>
+        </div>
+    </template>
+    <script>
+        Polymer('cg-datetime-picker', {
+            /**
+             * @attribute datetime
+             * @type Date
+             * @default null
+             */
+            datetime:new Date(),
+            adjustTime:true,
+            _pickerDate:null,
+            domReady:function(){
+                this.$.datePicker.addEventListener('selection-changed', function(e){
+                    if(this.datetime != null) {
+                        this.datetime.setFullYear(this._pickerDate.getFullYear());
+                        this.datetime.setMonth(this._pickerDate.getMonth());
+                        this.datetime.setDate(this._pickerDate.getDate());
+                        this.datetime = new Date(this.datetime.toISOString());
+                    }
+                }.bind(this));
+                this.$.timePicker.addEventListener('selection-changed', function(e){
+                    if(this.datetime != null) {
+                        this.datetime.setHours(this._pickerDate.getHours());
+                        this.datetime.setMinutes(this._pickerDate.getMinutes());
+                        this.datetime = new Date(this.datetime.toISOString());
+                    }
+                }.bind(this));
+            },
+            datetimeChanged:function(){
+                if(this.datetime == null) {
+                    this.datetime = new Date();
+                    this.adjustTime = true;
+                }else{
+                    this.adjustTime = false;
+                }
+                console.log("datetime picker date changed " + this._pickerDate)
+                this._pickerDate = new Date(this.datetime.toISOString());
+            },
+            ready:function(){
+                console.log("datetime picker ready")
+                this.datetimeChanged();
+            }
+        });
+    </script>
+</polymer-element>
