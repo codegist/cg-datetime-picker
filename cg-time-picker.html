@@ -116,18 +116,15 @@
                 return newVal;
             },
             adjustTimeChanged:function(){
-                console.log("adjustTimeChanged");
                 this.datetimeChanged();
             },
             _getDatetime:function(){
                 return this.datetime || new Date();
             },
             _refreshDateTime:function(){
-                console.log("_refreshDateTime")
                 this.datetime = new Date(this.datetime.toISOString());
             },
             ready:function(){
-                console.log("ready");
                 this.datetimeChanged();
             }
 //            _toggleAMPM:function(e){

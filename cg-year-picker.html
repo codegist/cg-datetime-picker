@@ -92,7 +92,6 @@
                     years.push(i);
                 }
                 this._years = years;
-                console.log("endering years")
             },
             _scrollToSelection:function(){
                 var selected = this.$.container.querySelector("div.year[data-year='" + this._currentYear + "']");
@@ -106,7 +105,6 @@
                         (scrollTop > selectedTop && selectedBottom < scrollBottom)
                     ||  (scrollBottom < selectedBottom && selectedTop > scrollTop)
                     ||  (scrollTop > selectedTop && selectedBottom > scrollBottom)) {
-                        console.log("selected: " + selected.dataset.year + " - " + selected.offsetTop)
                         this.$.scroller.scrollTop = selected.offsetTop - this.$.scroller.clientHeight/2 + selected.clientHeight/2;
                     }
                 }

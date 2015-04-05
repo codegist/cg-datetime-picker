@@ -1,0 +1,56 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="cg-date-picker-dialog.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<script src="../momentjs/min/moment-with-locales.min.js"></script>
+
+<polymer-element name="cg-date-input" attributes="datetime label error dateFormat">
+    <template>
+        <style>
+            :host .date-picker {
+                padding:0px;
+            }
+        </style>
+        <paper-input-decorator flex label="{{label}}" floatingLabel error="{{error}}" autoValidate>
+            <div horizontal layout>
+                <input flex is="core-input" required  value="{{_datetimeFormatted}}">
+                <paper-icon-button icon="menu" class="date-picker" on-tap="{{_openDialog}}" relative noink>
+                    <cg-date-picker-dialog id="picker" datetime="{{_pickerDatetime}}"></cg-date-picker-dialog>
+                </paper-icon-button>
+            </div>
+        </paper-input-decorator>
+    </template>
+    <script>
+        Polymer('cg-date-input', {
+            /**
+             * ISO Date string representation
+             *
+             * @attribute datetime
+             * @type String
+             * @default null
+             */
+            datetime:null,
+            dateFormat:"DD/MM/YYYY HH:mm",
+            error:"input is required!",
+            _pickerDatetime:null,
+            _datetimeFormatted:null,
+            domReady:function(){
+                this.$.picker.addEventListener('datetime-changed', function(e){
+                    this.datetime = moment(e.detail.toISOString(), moment.ISO_8601).toISOString();
+                }.bind(this));
+            },
+            _openDialog: function() {
+                this.datetimeChanged();
+                this.$.picker.open();
+            },
+            datetimeChanged:function(){
+                var dateTimeMoment = moment(this.datetime, moment.ISO_8601);
+                if(dateTimeMoment.isValid()) {
+                    this._pickerDatetime = this.datetime;
+                    this._datetimeFormatted = this.datetime && dateTimeMoment.format(this.dateFormat);
+                }else{
+                    this._pickerDatetime = this._datetimeFormatted = undefined;
+                }
+            }
+        });
+    </script>
+</polymer-element>
