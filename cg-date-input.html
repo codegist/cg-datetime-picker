@@ -46,6 +46,9 @@
                 }
             },
             _openDialog: function() {
+                if(this.disabled) {
+                    return;
+                }
                 this.datetimeChanged();
                 this.$.picker.open();
                 if(this._decoratorElement) {

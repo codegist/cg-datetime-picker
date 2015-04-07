@@ -2,7 +2,6 @@
 <link href="../paper-dialog/paper-action-dialog.html" rel="import">
 <link href="../paper-button/paper-button.html" rel="import">
 <link href="cg-date-picker.html" rel="import">
-<script src="../momentjs/min/moment-with-locales.min.js"></script>
 
 <style shim-shadowdom>
     html /deep/ .cg-date-picker-dialog::shadow #scroller {
@@ -132,6 +131,12 @@
                 _formattedYear: '',
                 _intl: {},
 
+                domReady:function(){
+                    // TODO - WHY WE NEED THAT????
+                    // TODO - IS IT BECAUSE OF SHADOW DOM THAT core-overlay.html>repositionTarget target.offsetHeight doesn't work as expected??
+                    // AND WHY layered="false" doesn't work here???
+                    this.$.dialog.addEventListener("core-overlay-open-completed", this.$.dialog.repositionTarget);
+                },
                 open: function() {
                     this.ready();
                     this.datetimeChanged();
@@ -150,10 +155,6 @@
                     this._dayOfMonth = this._intl.day(this._datetime);
                     this._monthShortName = this._intl.shortMonth(this._datetime);
                     this._formattedYear = this._intl.year(this._datetime);
-
-                    this._hours = this._pad(this._datetime.getHours(), 2);
-                    this._minutes = this._pad(this._datetime.getMinutes(), 2);
-                    this._year = this._datetime.getFullYear();
                     this.fire('selection-changed', this._datetime);
                 },
                 datetimeChanged: function(){
