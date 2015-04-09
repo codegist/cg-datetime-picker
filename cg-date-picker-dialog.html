@@ -1,6 +1,7 @@
 <link href="../polymer/polymer.html" rel="import">
 <link href="../paper-dialog/paper-action-dialog.html" rel="import">
 <link href="../paper-button/paper-button.html" rel="import">
+<link href="cg-base-picker-dialog.html" rel="import">
 <link href="cg-date-picker.html" rel="import">
 
 <style shim-shadowdom>
@@ -65,7 +66,7 @@
         line-height:1.5rem;
     }
 </style>
-<polymer-element name="cg-date-picker-dialog" attributes="datetime">
+<polymer-element name="cg-date-picker-dialog" extends="cg-base-picker-dialog" attributes="datetime">
     <template>
         <paper-action-dialog id="dialog" class="cg-date-picker-dialog" backdrop layered="true">
             <section layout horizontal id="container">
@@ -75,77 +76,13 @@
                     <h1 class="dayOfMonth">{{ _dayOfMonth }}</h1>
                     <h2 class="year">{{ _formattedYear }}</h2>
                 </div>
-                <cg-date-picker flex datetime="{{_datetime}}" id="datePicker"></cg-date-picker>
+                <cg-date-picker flex datetime="{{_datetime}}" id="datetimePicker"></cg-date-picker>
             </section>
             <paper-button affirmative>Cancel</paper-button>
             <paper-button affirmative on-tap={{setDate}}>OK</paper-button>
         </paper-action-dialog>
     </template>
     <script>
-        Polymer('cg-date-picker-dialog', {
-            /**
-             * @attribute datetime
-             * @type String
-             * @default null
-             */
-            datetime:null,
-            /**
-             * Locale setting per the HTML5 Intl API
-             *
-             * @attribute locale
-             * @type Array
-             * @default user system
-             */
-            locale: undefined,
-
-            _datetime:null,
-            _year:0,
-            _dayOfWeek: '',
-            _dayOfMonth: 0,
-            _monthShortName: '',
-            _formattedYear: '',
-            _intl: {},
-            ready:function() {
-                this.localeChanged();
-                this.datetimeChanged();
-            },
-            domReady:function(){
-                // TODO - WHY WE NEED THAT????
-                // TODO - IS IT BECAUSE OF SHADOW DOM THAT core-overlay.html>repositionTarget target.offsetHeight doesn't work as expected??
-                // AND WHY layered="false" doesn't work here???
-                this.$.dialog.addEventListener("core-overlay-open-completed", this.$.dialog.repositionTarget);
-            },
-            open: function() {
-                this.ready();
-                this.$.datePicker.ready();
-                this.$.dialog.open();
-            },
-            localeChanged: function(){
-                this._intl = {
-                    dayOfWeek: Intl.DateTimeFormat(this.locale, {weekday: 'long'}).format,
-                    day: Intl.DateTimeFormat(this.locale, {day: 'numeric'}).format,
-                    shortMonth: Intl.DateTimeFormat(this.locale, {month: 'short'}).format,
-                    year: Intl.DateTimeFormat(this.locale, {year: 'numeric'}).format
-                };
-            },
-            _datetimeChanged: function() {
-                this._dayOfWeek = this._intl.dayOfWeek(this._datetime);
-                this._dayOfMonth = this._intl.day(this._datetime);
-                this._monthShortName = this._intl.shortMonth(this._datetime);
-                this._formattedYear = this._intl.year(this._datetime);
-                this.fire('selection-changed', this._datetime);
-            },
-            datetimeChanged: function(){
-                if(typeof this.datetime == "string"){
-                    this._datetime = new Date(this.datetime);
-                }else if(this.datetime){
-                    this._datetime = new Date(this.datetime.toISOString());
-                }
-            },
-            setDate:function(){
-                this.datetime = this._datetime.toISOString();
-                this.fire('datetime-changed', this._datetime);
-            }
-        });
+        Polymer('cg-date-picker-dialog', {});
     </script>
 </polymer-element>

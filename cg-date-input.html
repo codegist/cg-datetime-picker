@@ -1,72 +1,14 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="cg-base-input.html">
 <link rel="import" href="cg-date-picker-dialog.html">
-<link rel="import" href="cg-lightdom-element.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
-<script src="../momentjs/min/moment-with-locales.min.js"></script>
 
-<polymer-element name="cg-date-input" extends="cg-lightdom-element" attributes="datetime dateFormat disabled" horizontal layout>
+<polymer-element name="cg-date-input" extends="cg-base-input" attributes="datetime dateFormat disabled">
     <template>
-        <style>
-            cg-date-input paper-icon-button {
-                padding:0px;
-            }
-            cg-date-input core-icon,
-            cg-date-input /deep/ core-icon{
-                width:18px!important;
-                height:18px!important;
-            }
-        </style>
-        <input flex is="core-input" required value="{{_datetimeFormatted}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input">
-        <paper-icon-button icon="fa:calendar-o" on-tap="{{_openDialog}}" relative noink disabled="{{disabled}}">
-            <cg-date-picker-dialog id="picker" datetime="{{_pickerDatetime}}"></cg-date-picker-dialog>
-        </paper-icon-button>
+        <cg-date-picker-dialog id="picker" datetime="{{_pickerDatetime}}"></cg-date-picker-dialog>
     </template>
     <script>
         Polymer('cg-date-input', {
-            /**
-             * ISO Date string representation
-             *
-             * @attribute datetime
-             * @type String
-             * @default null
-             */
-            datetime:null,
-            dateFormat:"DD/MM/YYYY",
-            disabled:false,
-            _pickerDatetime:null,
-            _datetimeFormatted:null,
-            _decoratorElement:null,
-            domReady:function(){
-                this.$.picker.addEventListener('datetime-changed', function(e){
-                    this.datetime = moment(e.detail.toISOString(), moment.ISO_8601).toISOString();
-                }.bind(this));
-                if(this.parentElement.tagName.toLowerCase() == "paper-input-decorator") {
-                    this._decoratorElement = this.parentElement; // _decoratorElement thing's quite nasty..
-                }
-            },
-            _openDialog: function() {
-                if(this.disabled) {
-                    return;
-                }
-                this.datetimeChanged();
-                this.$.picker.open();
-                if(this._decoratorElement) {
-                    this.job("refocus", function(){this._decoratorElement.focused = true;}, 250);
-                }
-            },
-            datetimeChanged:function() {
-                var dateTimeMoment = moment(this.datetime, moment.ISO_8601);
-                if (dateTimeMoment.isValid()) {
-                    this._pickerDatetime = this.datetime;
-                    this._datetimeFormatted = this.datetime && dateTimeMoment.format(this.dateFormat);
-                } else {
-                    this._pickerDatetime = this._datetimeFormatted = undefined;
-                }
-                if(this._decoratorElement) {
-                    this.job("validate", function(){this._decoratorElement.inputAction();}, 50);
-                }
-            }
+            dateFormat:"DD/MM/YYYY"
         });
     </script>
 </polymer-element>
