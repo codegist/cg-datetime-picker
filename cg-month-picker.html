@@ -1,6 +1,6 @@
 <link href="../polymer/polymer.html" rel="import">
 
-<polymer-element name="cg-year-picker" attributes="datetime">
+<polymer-element name="cg-month-picker" attributes="datetime">
     <template>
         <style>
             :host {
@@ -18,7 +18,7 @@
                 box-sizing: border-box;
             }
 
-            :host .years {
+            :host .months {
                 overflow:auto;
                 display: flex;
                 flex-wrap: wrap;
@@ -27,8 +27,8 @@
                 height: 210px;
             }
 
-            :host .year {
-                width: calc(32% - 6px);
+            :host .month {
+                width: calc(42% - 6px);
                 text-align: center;
                 margin: 3px;
                 font-size: 1.2rem;
@@ -36,32 +36,27 @@
                 align-items: center;
                 justify-content: center;
                 color:rgba(0, 0, 0, 0.870588);
-            }
-
-            :host .year[data-year]{
-                cursor: pointer;
-            }
-
-            :host .year span{
                 display: block;
-                width: 64px;
-                height: 64px;
                 line-height: 64px;
             }
 
-            :host .year.selected span{
+            :host .month[data-month]{
+                cursor: pointer;
+            }
+
+            :host .month.selected {
                 background-color: #009688;
-                color: white;
                 border-radius: 100%;
+                color: white;
             }
         </style>
-        <div on-tap="{{_selectYear}}" id="container">
-            <div data="{{year}}">
-                <div class="years" id="scroller">
-                    <template repeat="{{ year in _years }}">
-                        <template if="{{year}}">
-                            <div class="year {{ { selected : year == _currentYear} | tokenList }}" data-year="{{year}}">
-                                <span>{{year}}</span>
+        <div on-tap="{{_selectmonth}}" id="container">
+            <div data="{{month}}">
+                <div class="months" id="scroller">
+                    <template repeat="{{ month in _months }}">
+                        <template if="{{month}}">
+                            <div class="month {{ { selected : month.n == _currentmonth} | tokenList }}" data-month="{{month.n}}">
+                                {{month.name}}
                             </div>
                         </template>
                     </template>
@@ -70,27 +65,31 @@
         </div>
     </template>
     <script>
-        Polymer('cg-year-picker', {
+        Polymer('cg-month-picker', {
             datetime: new Date(),
             min:1900,
             max:2100,
 
-            _years:[],
-            _currentYear : 0,
+            _months:[],
+            _currentmonth : 0,
             ready: function(){
-                var years = [];
-                for(var i = this.min; i <= this.max; i++){
-                    years.push(i);
+                var _months = [];
+                for(var i = 0; i < 12; i++){
+                    var date = new Date(2000, i, 1, 0, 0, 0);
+                    _months.push({
+                        name:new Intl.DateTimeFormat(this.locale, {month:'long'}).format(date),
+                        n:i
+                    });
                 }
-                this._years = years;
+                this._months = _months;
                 this.datetimeChanged();
             },
             datetimeChanged: function(){
-                this._currentYear = this._getDateTime().getFullYear();
+                this._currentmonth = this._getDateTime().getMonth();
                 this._scrollToSelection();
             },
             _scrollToSelection:function(){
-                var selected = this.$.container.querySelector("div.year[data-year='" + this._currentYear + "']");
+                var selected = this.$.container.querySelector("div.month[data-month='" + this._currentmonth + "']");
                 if(selected) {
                     var scrollTop = this.$.scroller.scrollTop;
                     var scrollBottom = scrollTop + this.$.scroller.clientHeight;
@@ -105,12 +104,12 @@
                     }
                 }
             },
-            _selectYear: function(e){
-                var data = e.path[1].dataset.year ? e.path[1].dataset : e.path[0].dataset;
-                var year = data.year;
-                if(year){
+            _selectmonth: function(e){
+                var data = e.path[1].dataset.month ? e.path[1].dataset : e.path[0].dataset;
+                var month = data.month;
+                if(month){
                     var dt = this._getDateTime();
-                    this.datetime = new Date(year, dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
+                    this.datetime = new Date(dt.getFullYear(), month, dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
                     this.fire("selection-changed", this.datetime);
                 }
             },

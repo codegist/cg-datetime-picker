@@ -1,0 +1,19 @@
+{
+  "name": "cg-datetime-picker",
+  "version": "1.0.0",
+  "private": false,
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5",
+    "core-pages": "Polymer/core-pages#^0.5",
+    "core-icon-button": "Polymer/core-icon-button#^0.5",
+    "paper-button": "Polymer/paper-button#^0.5",
+    "paper-icon-button": "Polymer/paper-icon-button#^0.5",
+    "paper-dialog": "Polymer/paper-dialog#^0.5",
+    "font-awesome-polymer-icons": "philya/font-awesome-polymer-icons#^4.2.0-b2",
+    "momentjs": "~2.8.4"
+  },
+  "devDependencies": {
+    "paper-input-decorator": "Polymer/paper-input-decorator#^0.5",
+    "web-component-tester": "*"
+  }
+}

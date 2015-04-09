@@ -1,10 +1,11 @@
-<link href="../polymer/polymer.html" rel="import">
-<link href="cg-year-picker.html" rel="import">
-<link href="../core-icon-button/core-icon-button.html" rel="import">
-<link href="../paper-button/paper-button.html" rel="import">
-<link href="../paper-item/paper-item.html" rel="import">
-<link href="../paper-dropdown/paper-dropdown.html" rel="import">
-<link href="../core-pages/core-pages.html" rel="import">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../core-pages/core-pages.html">
+<link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
+<link rel="import" href="cg-year-picker.html">
+<link rel="import" href="cg-month-picker.html">
+
 <polymer-element name="cg-date-picker" attributes="datetime locale startDayOfWeek">
     <template>
         <style>
@@ -16,14 +17,14 @@
                 font-family:sans-serif;
             }
 
-            #container{
+            :host #container{
                 height: 100%;
                 width: 100%;
                 padding: 0px 9px;
                 box-sizing: border-box;
             }
 
-            .days{
+            :host .days{
                 display: flex;
                 flex-wrap: wrap;
                 width: 100%;
@@ -31,7 +32,7 @@
                 min-height: 210px;
             }
 
-            .day{
+            :host .day{
                 width: calc(14% - 6px);
                 text-align: center;
                 margin: 3px;
@@ -42,24 +43,24 @@
                 color:rgba(0, 0, 0, 0.870588);
             }
 
-            .day[data-date]{
+            :host .day[data-date]{
                 cursor: pointer;
             }
 
-            .day span{
+            :host .day span{
                 display: block;
                 width: 30px;
                 height: 30px;
                 line-height: 30px;
             }
 
-            .day.selected span{
+            :host .day.selected span{
                 background-color: #009688;
                 color: white;
                 border-radius: 100%;
             }
 
-            .day.title{
+            :host .day.title{
                 padding-top: 0px;
                 padding-bottom: 4px;
                 font-weight: bold;
@@ -67,32 +68,29 @@
                 cursor: default;
             }
 
-            .monthname{
+            :host .monthname{
                 text-align: center;
                 font-size: 1.2rem;
                 color: rgba(0,0,0,.73);
             }
-            .heading-month {
+            :host .heading-month {
                 text-transform: none!important;
+            }
+            :host paper-button.hover:hover {
+                box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.1);
+            }
+            :host .previous-month /deep/ core-icon,
+            :host .next-month /deep/ core-icon {
+                color:rgb(0, 150, 136)!important;
             }
         </style>
         <div on-tap="{{_selectDate}}" id="container">
             <div class="month" data-month="{{month.number}}" data-year="{{month.year}}">
                 <section layout horizontal center>
-                    <core-icon-button icon="chevron-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
-                    <div flex layout horizontal class="monthname">
-                        <paper-button id="monthBtn" class="monthbtn" on-tap="{{_monthPicker}}"><span class="heading-month">{{month.name}}</span>
-                            <paper-dropdown class="no-padding" layered id="monthDD" relatedTarget="{{$.monthBtn}}">
-                                <div class="menu">
-                                    <template repeat="{{_months}}">
-                                        <paper-item data-month="{{n}}" on-tap="{{_changeMonth}}">{{name}}</paper-item>
-                                    </template>
-                                </div>
-                            </paper-dropdown>
-                        </paper-button>
-                        <paper-button id="yearBtn" class="yearbtn" on-tap="{{_yearPicker}}"><span class="heading-year">{{month.year}}</span></paper-button>
-                    </div>
-                    <core-icon-button icon="chevron-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
+                    <core-icon-button icon="fa:caret-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
+                    <paper-button flex id="monthBtn" on-tap="{{_monthPicker}}" class="hover monthname"><span class="heading-month">{{month.name}}</span></paper-button>
+                    <paper-button flex id="yearBtn" on-tap="{{_yearPicker}}" class="hover monthname"><span class="heading-year">{{month.year}}</span></paper-button>
+                    <core-icon-button icon="fa:caret-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
                 </section>
                 <core-pages id="calendarPages" selected="0">
                     <div class="days" id="datePicker">
@@ -110,6 +108,7 @@
                             </template>
                         </template>
                     </div>
+                    <cg-month-picker id="monthPicker" datetime="{{_pickerDatetime}}"></cg-month-picker>
                     <cg-year-picker id="yearPicker" datetime="{{_pickerDatetime}}"></cg-year-picker>
                 </core-pages>
             </div>
@@ -129,22 +128,30 @@
             _weekDayNames: [],
             _nonNumericDates: false,
             _intl: {},
+            ready: function(){
+                this.localeChanged();
+                this.datetimeChanged();
+                this._renderMonth();
+                this.$.monthPicker.ready();
+                this.$.yearPicker.ready();
+            },
+            domReady:function(){
+                var yearMonthSelChangedCallback = function(e){
+                    var dt = this._getDateTime();
+                    this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), 1,
+                            dt.getHours(), dt.getMinutes(), dt.getSeconds());
+                    this.fire("selection-changed", this.datetime);
+                }.bind(this);
+                this.$.yearPicker.addEventListener('selection-changed', yearMonthSelChangedCallback);
+                this.$.monthPicker.addEventListener('selection-changed', yearMonthSelChangedCallback);
+            },
             _yearPicker:function(e){
-                this.$.calendarPages.selected = 1;
-                this.$.yearBtn.disable();
+                this.$.yearPicker.ready();
+                this.$.calendarPages.selected = this.$.calendarPages.selected == 2 ? 0 : 2;
             },
             _monthPicker:function(e) {
-                if (this.$.calendarPages.selected != 0) {
-                    this.$.calendarPages.selected = 0;
-                    this.$.yearBtn.enable();
-                }else{
-                    this.$.monthDD.toggle();
-                }
-            },
-            _changeMonth:function(e){
-                this.datetime = new Date(this._pickerDatetime.getFullYear(), e.target.dataset.month, this._pickerDatetime.getDate(), this._getDateTime().getHours(), this._getDateTime().getMinutes(), this._getDateTime().getSeconds());
-                this.$.monthDD.toggle();
-                this.fire("selection-changed");
+                this.$.monthPicker.ready();
+                this.$.calendarPages.selected = this.$.calendarPages.selected == 1 ? 0 : 1;
             },
             _renderMonth: function(){
                 var month = {
@@ -169,22 +176,24 @@
                 this.month = month;
             },
             _selectDate: function(e){
+                if(!e.path[1].dataset) {
+                    return;
+                }
                 var data = e.path[1].dataset.date ? e.path[1].dataset : e.path[0].dataset;
                 var day = data.date;
                 var month = data.month;
                 var year = data.year;
                 if(day && month && year){
-                    this.datetime = this._pickerDatetime = new Date(year, month, day, this._getDateTime().getHours(), this._getDateTime().getMinutes(), this._getDateTime().getSeconds());
-                    this.fire("selection-changed");
+                    var dt = this._getDateTime();
+                    this.datetime = this._pickerDatetime = new Date(year, month, day, dt.getHours(), dt.getMinutes(), dt.getSeconds());
+                    this.fire("selection-changed", this.datetime);
                 }
             },
             _previousMonth:function(){
-                var day = this._getDateTime().getMonth() == this._pickerDatetime.getMonth() - 1 ? this._getDateTime().getDate() : 1;
-                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() - 1, day);
+                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() - 1, 1);
             },
             _nextMonth:function(){
-                var day = this._getDateTime().getMonth() == this._pickerDatetime.getMonth() + 1 ? this._getDateTime().getDate() : 1;
-                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() + 1, day);
+                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() + 1, 1);
             },
             localeChanged: function(){
                 this._intl = {};
@@ -216,16 +225,6 @@
                 this._currentMonth = this._pickerDatetime.getMonth();
                 this._currentDay = this._pickerDatetime.getDate();
                 this._renderMonth();
-            },
-            ready: function(){
-                this.localeChanged();
-                this.datetimeChanged();
-            },
-            domReady:function(){
-                this.$.yearPicker.addEventListener('selection-changed', function(e){
-                    this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), this._pickerDatetime.getDate(), this._getDateTime().getHours(), this._getDateTime().getMinutes(), this._getDateTime().getSeconds());
-                    this.fire("selection-changed");
-                }.bind(this));
             }
         });
     </script>

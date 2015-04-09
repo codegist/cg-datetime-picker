@@ -42,7 +42,7 @@
                 }.bind(this));
             },
             datetimeChanged:function(){
-                this.adjustTime = this.datetime == null;
+                this.adjustTime = this.datetime ? false : true;
                 this._pickerDate = new Date((this.datetime || new Date()).toISOString());
             },
             ready:function(){
