@@ -1,0 +1,85 @@
+<link href="../polymer/polymer.html" rel="import">
+<link href="../paper-dialog/paper-action-dialog.html" rel="import">
+<link href="../paper-button/paper-button.html" rel="import">
+
+<polymer-element name="cg-base-picker-dialog" attributes="datetime">
+    <template></template>
+    <script>
+        Polymer({
+            /**
+             * @attribute datetime
+             * @type String
+             * @default null
+             */
+            datetime:null,
+            /**
+             * Locale setting per the HTML5 Intl API
+             *
+             * @attribute locale
+             * @type Array
+             * @default user system
+             */
+            locale: undefined,
+
+            _datetime:null,
+            _year:0,
+            _dayOfWeek: '',
+            _dayOfMonth: 0,
+            _monthShortName: '',
+            _formattedYear: '',
+            _intl: {},
+
+            ready:function() {
+                this.localeChanged();
+                this.datetimeChanged();
+            },
+            domReady:function(){
+                // TODO - WHY WE NEED THAT????
+                // TODO - IS IT BECAUSE OF SHADOW DOM THAT core-overlay.html>repositionTarget target.offsetHeight doesn't work as expected??
+                // AND WHY layered="false" doesn't work here???
+                this.$.dialog.addEventListener("core-overlay-open-completed", this.$.dialog.repositionTarget);
+            },
+            open: function() {
+                this.ready();
+                this.$.datetimePicker.ready();
+                this.$.dialog.open();
+            },
+            localeChanged: function(){
+                this._intl = {
+                    dayOfWeek: Intl.DateTimeFormat(this.locale, {weekday: 'long'}).format,
+                    day: Intl.DateTimeFormat(this.locale, {day: 'numeric'}).format,
+                    shortMonth: Intl.DateTimeFormat(this.locale, {month: 'short'}).format,
+                    year: Intl.DateTimeFormat(this.locale, {year: 'numeric'}).format
+                };
+            },
+            _datetimeChanged: function() {
+                this._dayOfWeek = this._intl.dayOfWeek(this._datetime);
+                this._dayOfMonth = this._intl.day(this._datetime);
+                this._monthShortName = this._intl.shortMonth(this._datetime);
+                this._formattedYear = this._intl.year(this._datetime);
+
+                this._hours = this._pad(this._datetime.getHours(), 2);
+                this._minutes = this._pad(this._datetime.getMinutes(), 2);
+                this._year = this._datetime.getFullYear();
+                this.fire('selection-changed', this._datetime);
+            },
+            datetimeChanged: function(){
+                if(typeof this.datetime == "string"){
+                    this._datetime = new Date(this.datetime);
+                }else if(this.datetime){
+                    this._datetime = new Date(this.datetime.toISOString());
+                }
+            },
+            _pad:function(num, size) {
+                var s = num+"";
+                while (s.length < size) s = "0" + s;
+                return s;
+            },
+            setDate:function(){
+                this.datetime = this._datetime.toISOString();
+                this.fire('datetime-changed', this._datetime);
+            }
+
+        });
+    </script>
+</polymer-element>
