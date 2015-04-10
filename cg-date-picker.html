@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../core-pages/core-pages.html">
+<link rel="import" href="../core-collapse/core-collapse.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
 <link rel="import" href="cg-year-picker.html">
 <link rel="import" href="cg-month-picker.html">
@@ -17,6 +17,17 @@
                 font-family:sans-serif;
             }
 
+            :host cg-month-picker,
+            :host cg-year-picker {
+                width:100%;
+                height:100%;
+            }
+
+            :host cg-month-picker /deep/ .months ,
+            :host cg-year-picker /deep/ .years {
+                height:200px;
+            }
+
             :host #container{
                 height: 100%;
                 width: 100%;
@@ -29,7 +40,7 @@
                 flex-wrap: wrap;
                 width: 100%;
                 align-content: stretch;
-                min-height: 210px;
+                min-height: 200px;
             }
 
             :host .day{
@@ -83,34 +94,46 @@
             :host .next-month /deep/ core-icon {
                 color:rgb(0, 150, 136)!important;
             }
+            :host /deep/ core-collapse {
+                /*display: inline!important;*/
+            }
+            :host /deep/ .core-collapse-closed {
+                /*display: none!important;*/
+            }
         </style>
         <div on-tap="{{_selectDate}}" id="container">
-            <div class="month" data-month="{{month.number}}" data-year="{{month.year}}">
+            <section class="month" data-month="{{month.number}}" data-year="{{month.year}}">
                 <section layout horizontal center>
                     <core-icon-button icon="fa:caret-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
-                    <paper-button flex id="monthBtn" on-tap="{{_monthPicker}}" class="hover monthname"><span class="heading-month">{{month.name}}</span></paper-button>
+                    <paper-button flex id="monthBtn" on-tap="{{_monthsPicker}}" class="hover monthname"><span class="heading-month">{{month.name}}</span></paper-button>
                     <paper-button flex id="yearBtn" on-tap="{{_yearPicker}}" class="hover monthname"><span class="heading-year">{{month.year}}</span></paper-button>
                     <core-icon-button icon="fa:caret-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
                 </section>
-                <core-pages id="calendarPages" selected="0">
-                    <div class="days" id="datePicker">
-                        <template repeat="{{name in _weekDayNames}}">
-                            <div class="day title">{{name}}</div>
-                        </template>
-                        <template repeat="{{ day in month.days }}">
-                            <template if="{{!day}}">
-                                <div class="day"></div>
+                <section>
+                    <core-collapse id="monthsCollapse">
+                        <cg-month-picker id="monthPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-month-picker>
+                    </core-collapse>
+                    <core-collapse id="yearCollapse">
+                        <cg-year-picker id="yearPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-year-picker>
+                    </core-collapse>
+                    <core-collapse id="monthCollapse" opened>
+                        <div class="days" id="datePicker">
+                            <template repeat="{{name in _weekDayNames}}">
+                                <div class="day title">{{name}}</div>
                             </template>
-                            <template if="{{day}}">
-                                <div class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
-                                    <span>{{day.day}}</span>
-                                </div>
+                            <template repeat="{{ day in month.days }}">
+                                <template if="{{!day}}">
+                                    <div class="day"></div>
+                                </template>
+                                <template if="{{day}}">
+                                    <div class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
+                                        <span>{{day.day}}</span>
+                                    </div>
+                                </template>
                             </template>
-                        </template>
-                    </div>
-                    <cg-month-picker id="monthPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-month-picker>
-                    <cg-year-picker id="yearPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-year-picker>
-                </core-pages>
+                        </div>
+                    </core-collapse>
+                </section>
             </div>
         </div>
     </template>
@@ -132,8 +155,6 @@
                 this.localeChanged();
                 this.datetimeChanged();
                 this._renderMonth();
-                this.$.monthPicker.ready();
-                this.$.yearPicker.ready();
             },
             _selectionChanged:function(){
                 var dt = this._getDateTime();
@@ -143,11 +164,27 @@
             },
             _yearPicker:function(e){
                 this.$.yearPicker.ready();
-                this.$.calendarPages.selected = this.$.calendarPages.selected == 2 ? 0 : 2;
+                if(this.$.yearCollapse.opened) {
+                    this.$.monthsCollapse.opened = false;
+                    this.$.yearCollapse.opened = false;
+                    this.$.monthCollapse.opened = true;
+                }else{
+                    this.$.monthsCollapse.opened = false;
+                    this.$.monthCollapse.opened = false;
+                    this.$.yearCollapse.opened = true;
+                }
             },
-            _monthPicker:function(e) {
+            _monthsPicker:function(e) {
                 this.$.monthPicker.ready();
-                this.$.calendarPages.selected = this.$.calendarPages.selected == 1 ? 0 : 1;
+                if(this.$.monthsCollapse.opened) {
+                    this.$.yearCollapse.opened = false;
+                    this.$.monthsCollapse.opened = false;
+                    this.$.monthCollapse.opened = true;
+                }else{
+                    this.$.yearCollapse.opened = false;
+                    this.$.monthCollapse.opened = false;
+                    this.$.monthsCollapse.opened = true;
+                }
             },
             _renderMonth: function(){
                 var month = {

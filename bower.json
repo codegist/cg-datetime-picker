@@ -4,7 +4,7 @@
   "private": false,
   "dependencies": {
     "polymer": "Polymer/polymer#^0.5",
-    "core-pages": "Polymer/core-pages#^0.5",
+    "core-collapse": "Polymer/core-collapse#^0.5",
     "core-icon-button": "Polymer/core-icon-button#^0.5",
     "paper-button": "Polymer/paper-button#^0.5",
     "paper-icon-button": "Polymer/paper-icon-button#^0.5",

@@ -85,17 +85,27 @@
                 this._years = years;
                 this.datetimeChanged();
             },
+
             datetimeChanged: function(){
                 this._currentYear = this._getDateTime().getFullYear();
                 this._scrollToSelection();
             },
-            _scrollToSelection:function(){
+            _scrollToSelection:function(times){
                 var selected = this.$.container.querySelector("div.year[data-year='" + this._currentYear + "']");
                 if(selected) {
                     var scrollTop = this.$.scroller.scrollTop;
                     var scrollBottom = scrollTop + this.$.scroller.clientHeight;
                     var selectedTop = selected.offsetTop;
                     var selectedBottom = selectedTop + selected.clientHeight;
+
+                    // to cater for when dom sizing is not ready due to animation or other
+                    if(scrollTop == 0 && scrollBottom == 0 && selectedTop == 0 && selectedBottom == 0 && (!times || times > 1)) {
+                        return this.job("async-scroll", function(){
+                            var t = typeof times === "number" ? --times : 3;
+                            this._scrollToSelection(t);
+                        }.bind(this), 2);
+                    }
+
                     // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
                     if(
                         (scrollTop > selectedTop && selectedBottom < scrollBottom)
