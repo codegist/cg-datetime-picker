@@ -5,9 +5,9 @@
 <polymer-element name="cg-datetime-picker" attributes="datetime label adjustTime">
     <template>
         <section horizontal layout>
-            <cg-date-picker id="datePicker" datetime="{{_pickerDate}}"></cg-date-picker>
+            <cg-date-picker datetime="{{_pickerDate}}" on-selection-changed="{{_selectionChanged}}"></cg-date-picker>
             <div style="width:20px"></div>
-            <cg-time-picker id="timePicker" vertical layout center datetime="{{_pickerDate}}" adjustTime="{{adjustTime}}"></cg-time-picker>
+            <cg-time-picker datetime="{{_pickerDate}}" on-selection-changed="{{_selectionChanged}}" adjustTime="{{adjustTime}}"></cg-time-picker>
         </section>
     </template>
     <script>
@@ -20,26 +20,8 @@
             datetime:new Date(),
             adjustTime:true,
             _pickerDate:null,
-            domReady:function(){
-                this.$.datePicker.addEventListener('selection-changed', function(e){
-                    if(this.datetime != null) {
-                        this.datetime.setFullYear(this._pickerDate.getFullYear());
-                        this.datetime.setMonth(this._pickerDate.getMonth());
-                        this.datetime.setDate(this._pickerDate.getDate());
-                        this.datetime = new Date(this.datetime.toISOString());
-                    }else{
-                        this.datetime = this._pickerDate;
-                    }
-                }.bind(this));
-                this.$.timePicker.addEventListener('selection-changed', function(e){
-                    if(this.datetime != null) {
-                        this.datetime.setHours(this._pickerDate.getHours());
-                        this.datetime.setMinutes(this._pickerDate.getMinutes());
-                        this.datetime = new Date(this.datetime.toISOString());
-                    }else{
-                        this.datetime = this._pickerDate;
-                    }
-                }.bind(this));
+            _selectionChanged:function(){
+                this.datetime = this.datetime != null ? new Date(this._pickerDate.toISOString()) : this._pickerDate;
             },
             datetimeChanged:function(){
                 this.adjustTime = this.datetime ? false : true;

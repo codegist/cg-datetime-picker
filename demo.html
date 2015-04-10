@@ -62,28 +62,28 @@
                 <!--<cg-month-picker datetime="{{myObject.datetime2}}"></cg-month-picker>-->
             <!--</section>-->
         <!--</section>-->
-        <!--<h2>Date Picker</h2>-->
-        <!--<section layout horizontal wrap class="demo">-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime1}}"</h1>-->
-                <!--<cg-date-picker datetime="{{myObject.datetime1}}"></cg-date-picker>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime2}}"</h1>-->
-                <!--<cg-date-picker datetime="{{myObject.datetime2}}"></cg-date-picker>-->
-            <!--</section>-->
-        <!--</section>-->
-        <!--<h2>Datetime Picker</h2>-->
-        <!--<section layout horizontal wrap class="demo">-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime1}}"</h1>-->
-                <!--<cg-datetime-picker datetime="{{myObject.datetime1}}"></cg-datetime-picker>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime2}}"</h1>-->
-                <!--<cg-datetime-picker datetime="{{myObject.datetime2}}"></cg-datetime-picker>-->
-            <!--</section>-->
-        <!--</section>-->
+        <h2>Date Picker</h2>
+        <section layout horizontal wrap class="demo">
+            <section class="demo-item">
+                <h1>with "{{myObject.datetime1}}"</h1>
+                <cg-date-picker datetime="{{myObject.datetime1}}"></cg-date-picker>
+            </section>
+            <section class="demo-item">
+                <h1>with "{{myObject.datetime2}}"</h1>
+                <cg-date-picker datetime="{{myObject.datetime2}}"></cg-date-picker>
+            </section>
+        </section>
+        <h2>Datetime Picker</h2>
+        <section layout horizontal wrap class="demo">
+            <section class="demo-item">
+                <h1>with "{{myObject.datetime1}}"</h1>
+                <cg-datetime-picker datetime="{{myObject.datetime1}}"></cg-datetime-picker>
+            </section>
+            <section class="demo-item">
+                <h1>with "{{myObject.datetime2}}"</h1>
+                <cg-datetime-picker datetime="{{myObject.datetime2}}"></cg-datetime-picker>
+            </section>
+        </section>
         <!--<h2>Date Input Demo</h2>-->
         <!--<section layout horizontal wrap class="demo">-->
             <!--<section class="demo-item">-->
@@ -128,15 +128,15 @@
                 <paper-input-decorator label="Birthdate" floatingLabel error="input is required!" autoValidate>
                     <cg-date-input></cg-date-input>
                 </paper-input-decorator>
-                <!--<paper-input-decorator label="DNI" floatingLabel error="input is required!" autoValidate>-->
-                    <!--<input is="core-input" required>-->
-                <!--</paper-input-decorator>-->
+                <paper-input-decorator label="DNI" floatingLabel error="input is required!" autoValidate>
+                    <input is="core-input" required>
+                </paper-input-decorator>
                 <!--<paper-input-decorator label="Address" floatingLabel error="input is required!" autoValidate>-->
                     <!--<input is="core-input" required>-->
                 <!--</paper-input-decorator>-->
-                <paper-input-decorator label="Birthdate" floatingLabel error="input is required!" autoValidate>
-                    <cg-datetime-input></cg-datetime-input>
-                </paper-input-decorator>
+                <!--<paper-input-decorator label="Birthdate" floatingLabel error="input is required!" autoValidate>-->
+                    <!--<cg-datetime-input></cg-datetime-input>-->
+                <!--</paper-input-decorator>-->
                 <!--<paper-input-decorator label="Mobile phone" floatingLabel error="input is required!" autoValidate>-->
                     <!--<input is="core-input" required>-->
                 <!--</paper-input-decorator>-->
@@ -160,6 +160,12 @@
             datetimestring3:"",
             datetimestring4:"dsfds"
         }
+
+//        var inputs = document.querySelectorAll('paper-input-decorator');
+//        for (var i = 0; i < inputs.length; i++) {
+//            inputs[i].disabled = true;
+//            inputs[i].querySelectorAll("input,cg-date-input")[0].disabled = true;
+//        }
     });
 </script>
 

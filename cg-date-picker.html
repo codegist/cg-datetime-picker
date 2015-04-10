@@ -108,8 +108,8 @@
                             </template>
                         </template>
                     </div>
-                    <cg-month-picker id="monthPicker" datetime="{{_pickerDatetime}}"></cg-month-picker>
-                    <cg-year-picker id="yearPicker" datetime="{{_pickerDatetime}}"></cg-year-picker>
+                    <cg-month-picker id="monthPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-month-picker>
+                    <cg-year-picker id="yearPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-year-picker>
                 </core-pages>
             </div>
         </div>
@@ -135,15 +135,11 @@
                 this.$.monthPicker.ready();
                 this.$.yearPicker.ready();
             },
-            domReady:function(){
-                var yearMonthSelChangedCallback = function(e){
-                    var dt = this._getDateTime();
-                    this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), 1,
-                            dt.getHours(), dt.getMinutes(), dt.getSeconds());
-                    this.fire("selection-changed", this.datetime);
-                }.bind(this);
-                this.$.yearPicker.addEventListener('selection-changed', yearMonthSelChangedCallback);
-                this.$.monthPicker.addEventListener('selection-changed', yearMonthSelChangedCallback);
+            _selectionChanged:function(){
+                var dt = this._getDateTime();
+                this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), 1,
+                        dt.getHours(), dt.getMinutes(), dt.getSeconds());
+                this.fire("selection-changed", this.datetime);
             },
             _yearPicker:function(e){
                 this.$.yearPicker.ready();

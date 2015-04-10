@@ -1,15 +1,18 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="cg-lightdom-element.html">
+<link rel="import" href="../cg-lightdom-element/cg-lightdom-element.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
 
 <script src="../momentjs/min/moment-with-locales.min.js"></script>
 
-<polymer-element name="cg-base-input" extends="cg-lightdom-element" attributes="datetime dateFormat disabled" horizontal layout>
+<polymer-element name="cg-base-input" extends="cg-lightdom-element" attributes="datetime dateFormat disabled required" horizontal layout>
     <template>
         <style>
             {{constructor.name}} paper-icon-button {
                 padding:0px;
+            }
+            {{constructor.name}} input {
+                width:100%!important;
             }
             {{constructor.name}} core-icon,
             {{constructor.name}} /deep/ core-icon{
@@ -17,7 +20,7 @@
                 height:18px!important;
             }
         </style>
-        <input flex is="core-input" required value="{{_datetimeFormatted}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input" on-change="{{_onInputChange}}">
+        <input flex is="core-input" required?="{{required}}" value="{{_datetimeFormatted}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input" on-change="{{_onInputChange}}">
         <paper-icon-button icon="fa:calendar-o" on-tap="{{_openDialog}}" relative noink disabled="{{disabled}}">
             <content></content>
         </paper-icon-button>
@@ -34,6 +37,7 @@
             datetime:null,
             dateFormat:"DD/MM/YYYY",
             disabled:false,
+            required:false,
             _pickerDatetime:null,
             _datetimeFormatted:null,
             _decoratorElement:null,
