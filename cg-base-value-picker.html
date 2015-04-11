@@ -1,0 +1,143 @@
+<link href="../polymer/polymer.html" rel="import">
+
+<polymer-element name="cg-base-value-picker" attributes="datetime min max itemWidth containerWidth">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                position: relative;
+                height: 250px;
+                width: 300px;
+                font-family:sans-serif;
+            }
+
+            :host #container{
+                height: 100%;
+                width: 100%;
+                padding: 0px 9px;
+                box-sizing: border-box;
+            }
+
+            :host .values {
+                overflow:auto;
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+                align-content: stretch;
+                height: 210px;
+            }
+
+            :host .value {
+                width: {{containerWidth}};
+                text-align: center;
+                margin: 3px;
+                font-size: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color:rgba(0, 0, 0, 0.870588);
+                display: block;
+                line-height: 64px;
+
+            }
+            :host .value div {
+                width: {{itemWidth}};
+                height: {{itemHeight}};
+            }
+
+            :host .value[data-value]{
+                cursor: pointer;
+            }
+
+            :host .value.selected div {
+                background-color: #009688;
+                border-radius: 100%;
+                color: white;
+            }
+        </style>
+        <div on-tap="{{_selectvalue}}" id="container">
+            <div data="{{value}}">
+                <div class="values" id="scroller">
+                    <template repeat="{{ value in _values }}">
+                        <template if="{{value}}">
+                            <div class="value {{ { selected : value.n == _currentvalue} | tokenList }}" data-value="{{value.n}}">
+                                <div>{{value.name}}</div>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer('cg-base-value-picker', {
+            datetime: new Date(),
+            min:null,
+            max:null,
+
+            _values:[],
+            _currentvalue : 0,
+            _getDisplayName:function(i){
+                throw "to override";
+            },
+            _getCurrentValue:function(date){
+                throw "to override";
+            },
+            _toDatetime:function(selectedValue, currentDatetime){
+                throw "to override";
+            },
+            ready: function(){
+                var _values = [];
+                for(var i = this.min; i <= this.max; i++){
+                    _values.push({
+                        name:this._getDisplayName(i),
+                        n:i
+                    });
+                }
+                this._values = _values;
+                this.datetimeChanged();
+            },
+            datetimeChanged: function(){
+                this._currentvalue = this._getCurrentValue(this._getDateTime());
+                this._scrollToSelection();
+            },
+            _scrollToSelection:function(times){
+                var selected = this.$.container.querySelector("div.value[data-value='" + this._currentvalue + "']");
+                if(selected) {
+                    var scrollTop = this.$.scroller.scrollTop;
+                    var scrollBottom = scrollTop + this.$.scroller.clientHeight;
+                    var selectedTop = selected.offsetTop;
+                    var selectedBottom = selectedTop + selected.clientHeight;
+
+                    // to cater for when dom sizing is not ready due to animation or other
+                    if((scrollTop + scrollBottom + selectedTop + selectedBottom) == 0 && (!times || times > 1)) {
+                        return this.job("async-scroll", function(){
+                            var t = typeof times === "number" ? --times : 5;
+                            this._scrollToSelection(t);
+                        }.bind(this), 2);
+                    }
+
+                    // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
+                    if(
+                        (scrollTop > selectedTop && selectedBottom < scrollBottom)
+                    ||  (scrollBottom < selectedBottom && selectedTop > scrollTop)
+                    ||  (scrollTop > selectedTop && selectedBottom > scrollBottom)) {
+                        this.$.scroller.scrollTop = selected.offsetTop - this.$.scroller.clientHeight/2 + selected.clientHeight/2;
+                    }
+                }
+            },
+            _selectvalue: function(e){
+                var data = e.path[1].dataset.value ? e.path[1].dataset : e.path[0].dataset;
+                var value = data.value;
+                if(value){
+                    var dt = this._getDateTime();
+                    this.datetime = this._toDatetime(value, dt);
+                    this.fire("selection-changed", this.datetime);
+                }
+            },
+            _getDateTime:function(){
+                return this.datetime || new Date();
+            }
+        });
+    </script>
+</polymer-element>

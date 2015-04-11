@@ -1,129 +1,24 @@
 <link href="../polymer/polymer.html" rel="import">
+<link href="cg-base-value-picker.html" rel="import">
 
-<polymer-element name="cg-month-picker" attributes="datetime">
-    <template>
-        <style>
-            :host {
-                display: inline-block;
-                position: relative;
-                height: 250px;
-                width: 300px;
-                font-family:sans-serif;
-            }
-
-            :host #container{
-                height: 100%;
-                width: 100%;
-                padding: 0px 9px;
-                box-sizing: border-box;
-            }
-
-            :host .months {
-                overflow:auto;
-                display: flex;
-                flex-wrap: wrap;
-                width: 100%;
-                align-content: stretch;
-                height: 210px;
-            }
-
-            :host .month {
-                width: calc(42% - 6px);
-                text-align: center;
-                margin: 3px;
-                font-size: 1.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color:rgba(0, 0, 0, 0.870588);
-                display: block;
-                line-height: 64px;
-            }
-
-            :host .month[data-month]{
-                cursor: pointer;
-            }
-
-            :host .month.selected {
-                background-color: #009688;
-                border-radius: 100%;
-                color: white;
-            }
-        </style>
-        <div on-tap="{{_selectmonth}}" id="container">
-            <div data="{{month}}">
-                <div class="months" id="scroller">
-                    <template repeat="{{ month in _months }}">
-                        <template if="{{month}}">
-                            <div class="month {{ { selected : month.n == _currentmonth} | tokenList }}" data-month="{{month.n}}">
-                                {{month.name}}
-                            </div>
-                        </template>
-                    </template>
-                </div>
-            </div>
-        </div>
-    </template>
+<polymer-element name="cg-month-picker" extends="cg-base-value-picker" attributes="datetime">
     <script>
         Polymer('cg-month-picker', {
             datetime: new Date(),
-            min:1900,
-            max:2100,
-
-            _months:[],
-            _currentmonth : 0,
-            ready: function(){
-                var _months = [];
-                for(var i = 0; i < 12; i++){
-                    var date = new Date(2000, i, 1, 0, 0, 0);
-                    _months.push({
-                        name:new Intl.DateTimeFormat(this.locale, {month:'long'}).format(date),
-                        n:i
-                    });
-                }
-                this._months = _months;
-                this.datetimeChanged();
+            min:1,
+            max:12,
+            containerWidth:"calc(42%% - 6px)",
+            itemWidth:"auto",
+            itemHeight:"auto",
+            _getDisplayName:function(value){
+                var date = new Date(2000, value, 1, 0, 0, 0);
+                return new Intl.DateTimeFormat(this.locale, {month:'long'}).format(date);
             },
-            datetimeChanged: function(){
-                this._currentmonth = this._getDateTime().getMonth();
-                this._scrollToSelection();
+            _getCurrentValue:function(date){
+                return date.getMonth();
             },
-            _scrollToSelection:function(times){
-                var selected = this.$.container.querySelector("div.month[data-month='" + this._currentmonth + "']");
-                if(selected) {
-                    var scrollTop = this.$.scroller.scrollTop;
-                    var scrollBottom = scrollTop + this.$.scroller.clientHeight;
-                    var selectedTop = selected.offsetTop;
-                    var selectedBottom = selectedTop + selected.clientHeight;
-
-                    // to cater for when dom sizing is not ready due to animation or other
-                    if(scrollTop == 0 && scrollBottom == 0 && selectedTop == 0 && selectedBottom == 0 && (!times || times > 1)) {
-                        return this.job("async-scroll", function(){
-                            var t = typeof times === "number" ? --times : 3;
-                            this._scrollToSelection(t);
-                        }.bind(this), 2);
-                    }
-
-                    // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
-                    if(
-                        (scrollTop > selectedTop && selectedBottom < scrollBottom)
-                    ||  (scrollBottom < selectedBottom && selectedTop > scrollTop)
-                    ||  (scrollTop > selectedTop && selectedBottom > scrollBottom)) {
-                        this.$.scroller.scrollTop = selected.offsetTop - this.$.scroller.clientHeight/2 + selected.clientHeight/2;
-                    }
-                }
-            },
-            _selectmonth: function(e){
-                var data = e.path[1].dataset.month ? e.path[1].dataset : e.path[0].dataset;
-                var month = data.month;
-                if(month){
-                    var dt = this._getDateTime();
-                    this.datetime = new Date(dt.getFullYear(), month, dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
-                    this.fire("selection-changed", this.datetime);
-                }
-            },
-            _getDateTime:function(){
-                return this.datetime || new Date();
+            _toDatetime:function(selectedValue, currentDatetime){
+                return new Date(currentDatetime.getFullYear(), selectedValue, currentDatetime.getDate(), currentDatetime.getHours(), currentDatetime.getMinutes(), currentDatetime.getSeconds());
             }
         });
     </script>
