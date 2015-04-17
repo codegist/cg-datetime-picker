@@ -54,6 +54,10 @@
                 border-radius: 100%;
                 color: white;
             }
+
+            :host .value div {
+                outline:0;
+            }
         </style>
         <div on-tap="{{_selectvalue}}" id="container">
             <div data="{{value}}">
@@ -61,7 +65,7 @@
                     <template repeat="{{ value in _values }}">
                         <template if="{{value}}">
                             <div class="value {{ { selected : value.n == _currentvalue} | tokenList }}" data-value="{{value.n}}">
-                                <div>{{value.name}}</div>
+                                <div tabindex="0">{{value.name}}</div>
                             </div>
                         </template>
                     </template>

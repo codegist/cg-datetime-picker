@@ -20,8 +20,8 @@
                 height:18px!important;
             }
         </style>
-        <input flex is="core-input" required?="{{required}}" value="{{_datetimeFormatted}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input" on-change="{{_onInputChange}}">
-        <paper-icon-button icon="fa:calendar-o" on-tap="{{_openDialog}}" relative noink disabled="{{disabled}}">
+        <input tabindex="0" flex is="core-input" required?="{{required}}" value="{{_datetimeFormatted}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input" on-change="{{_onInputChange}}">
+        <paper-icon-button tabindex="0" icon="fa:calendar-o" on-tap="{{_openDialog}}" relative noink disabled="{{disabled}}">
             <content></content>
         </paper-icon-button>
     </template>

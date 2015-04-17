@@ -94,20 +94,18 @@
             :host .next-month /deep/ core-icon {
                 color:rgb(0, 150, 136)!important;
             }
-            :host /deep/ core-collapse {
-                /*display: inline!important;*/
-            }
-            :host /deep/ .core-collapse-closed {
-                /*display: none!important;*/
+            :host .previous-month,
+            :host .next-month {
+                outline:0;
             }
         </style>
         <div on-tap="{{_selectDate}}" id="container">
             <section class="month" data-month="{{month.number}}" data-year="{{month.year}}">
                 <section layout horizontal center>
-                    <core-icon-button icon="fa:caret-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
-                    <paper-button flex id="monthBtn" on-tap="{{_monthsPicker}}" class="hover monthname"><span class="heading-month">{{month.name}}</span></paper-button>
-                    <paper-button flex id="yearBtn" on-tap="{{_yearPicker}}" class="hover monthname"><span class="heading-year">{{month.year}}</span></paper-button>
-                    <core-icon-button icon="fa:caret-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
+                    <core-icon-button tabindex="0" icon="fa:caret-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
+                    <paper-button tabindex="0" flex id="monthBtn" on-tap="{{_monthsPicker}}" class="hover monthname"><span class="heading-month">{{month.name}}</span></paper-button>
+                    <paper-button tabindex="0" flex id="yearBtn" on-tap="{{_yearPicker}}" class="hover monthname"><span class="heading-year">{{month.year}}</span></paper-button>
+                    <core-icon-button tabindex="0" icon="fa:caret-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
                 </section>
                 <section>
                     <core-collapse id="monthsCollapse">
@@ -126,7 +124,7 @@
                                     <div class="day"></div>
                                 </template>
                                 <template if="{{day}}">
-                                    <div class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
+                                    <div tabindex="0" class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
                                         <span>{{day.day}}</span>
                                     </div>
                                 </template>

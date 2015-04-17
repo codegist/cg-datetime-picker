@@ -7,6 +7,7 @@
         <style>
             :host .picker-arrow {
                 padding:0px;
+                outline:0;
             }
             :host /deep/ core-icon {
                 height:64px!important;
@@ -28,15 +29,15 @@
         </style>
         <section horizontal layout>
             <div flex layout vertical>
-                <core-icon-button vertical layout center icon="fa:caret-up" data-target="hours" data-step="1" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
-                <input id="hours" readonly type="number" data-min="0" data-max="23" value="{{_hours}}" class="picker"/>
-                <core-icon-button vertical layout center icon="fa:caret-down" data-target="hours" data-step="1" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-up" data-target="hours" data-step="1" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <input tabindex="0" id="hours" readonly type="number" data-min="0" data-max="23" value="{{_hours}}" class="picker"/>
+                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-down" data-target="hours" data-step="1" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
             </div>
             <div class="divider" horizontal layout center>:</div>
             <div flex layout vertical>
-                <core-icon-button vertical layout center icon="fa:caret-up" data-target="minutes" data-step="{{minuteStep}}" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
-                <input id="minutes" readonly type="number" data-min="{{_minuteLimitDown}}" data-max="{{_minuteLimitUp}}" value="{{_minutes}}" class="picker"/>
-                <core-icon-button vertical layout center icon="fa:caret-down" data-target="minutes" data-step="{{minuteStep}}" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-up" data-target="minutes" data-step="{{minuteStep}}" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+                <input tabindex="0" id="minutes" readonly type="number" data-min="{{_minuteLimitDown}}" data-max="{{_minuteLimitUp}}" value="{{_minutes}}" class="picker"/>
+                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-down" data-target="minutes" data-step="{{minuteStep}}" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
             </div>
         </section>
     </template>
