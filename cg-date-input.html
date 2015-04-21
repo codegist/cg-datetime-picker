@@ -4,7 +4,9 @@
 
 <polymer-element name="cg-date-input" extends="cg-base-input" attributes="datetime dateFormat disabled required">
     <template>
+        <shadow>
         <cg-date-picker-dialog id="picker" datetime="{{_pickerDatetime}}"></cg-date-picker-dialog>
+        </shadow>
     </template>
     <script>
         Polymer({
