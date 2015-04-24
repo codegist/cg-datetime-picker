@@ -39,10 +39,22 @@
                 // AND WHY layered="false" doesn't work here???
                 this.$.dialog.addEventListener("core-overlay-open-completed", this.$.dialog.repositionTarget);
             },
-            open: function() {
+            open: function(datetime, closeCallback) {
+                this.datetime = datetime || this.datetime;
                 this.ready();
                 this.$.datetimePicker.ready();
                 this.$.dialog.open();
+                closeCallback && this._listenOnce(this, 'datetime-changed', function(){
+                    closeCallback(this.datetime);
+                }.bind(this ));
+            },
+            _listenOnce: function(node, event, fn, args) {
+                var self = this;
+                var listener = function() {
+                    fn.apply(self, args);
+                    node.removeEventListener(event, listener, false);
+                }
+                node.addEventListener(event, listener, false);
             },
             localeChanged: function(){
                 this._intl = {
