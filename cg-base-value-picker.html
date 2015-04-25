@@ -79,8 +79,11 @@
             min:null,
             max:null,
 
-            _values:[],
+            _values:null,
             _currentvalue : 0,
+            created:function(){
+                this._values = [];
+            },
             _getDisplayName:function(i){
                 throw "to override";
             },
