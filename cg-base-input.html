@@ -30,7 +30,7 @@
              * ISO Date string representation
              *
              * @attribute datetime
-             * @type String
+             * @type Date
              * @default null
              */
             datetime:null,
@@ -41,14 +41,14 @@
             _datetimeFormatted:null,
             _decoratorElement:null,
             domReady:function(){
-                this.$.picker.addEventListener('datetime-changed', function(e){
-                    this.datetime = moment(e.detail.toISOString(), moment.ISO_8601).toISOString();
-                    this.fire("change", this.datetime);
-                }.bind(this));
                 if(this.parentElement.tagName.toLowerCase() == "paper-input-decorator") {
                     this._decoratorElement = this.parentElement; // _decoratorElement thing's quite nasty..
                     this._decoratorElement.input = this.$.input; // _decoratorElement thing's quite nasty..
                 }
+                this.$.picker.addEventListener('datetime-changed', function(e){
+                    this.datetime = e.detail;
+                    this.fire("change", this.datetime);
+                }.bind(this));
             },
             _onInputChange:function(){
                 this.fire("change", this.datetime);
@@ -67,29 +67,16 @@
                 var date = moment(this._datetimeFormatted, this.dateFormat, true);
                 if(!date.isValid()) {
                     this.$.input.setCustomValidity("Date is not valid");
-                    if (this._decoratorElement) {
-                        this.job("validate", function () {
-                            this._decoratorElement.inputChanged();
-                        }, 50);
-                    }
+                    this._decoratorElement &&  this.async(this._decoratorElement.inputChanged.bind(this._decoratorElement));
                 }else{
-                    this.datetime = date.toISOString();
+                    this.datetime = new Date(date.toISOString());
                     this.$.input.setCustomValidity(null);
                 }
             },
             datetimeChanged: function () {
-                var dateTimeMoment = moment(this.datetime, moment.ISO_8601);
-                if (dateTimeMoment.isValid()) {
-                    this._pickerDatetime = this.datetime;
-                    this._datetimeFormatted = this.datetime && dateTimeMoment.format(this.dateFormat);
-                } else {
-                    this._pickerDatetime = this._datetimeFormatted = undefined;
-                }
-                if (this._decoratorElement) {
-                    this.job("validate", function () {
-                        this._decoratorElement.inputAction();
-                    }, 50);
-                }
+                this._pickerDatetime = this.datetime ? new Date(this.datetime) : null;
+                this._datetimeFormatted = this.datetime && moment(this.datetime.toISOString(), moment.ISO_8601).format(this.dateFormat);
+                this._decoratorElement &&  this.async(this._decoratorElement.inputAction.bind(this._decoratorElement));
             }
         });
     </script>
