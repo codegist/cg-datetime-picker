@@ -1,0 +1,24 @@
+<link href="../polymer/polymer.html" rel="import">
+<link href="cg-base-value-picker.html" rel="import">
+
+<polymer-element name="cg-year-picker" extends="cg-base-value-picker" attributes="datetime">
+    <script>
+        Polymer('cg-year-picker', {
+            datetime: new Date(),
+            min:1900,
+            max:2100,
+            containerWidth:"calc(32% - 6px)",
+            itemWidth:"64px",
+            itemHeight:"64px",
+            _getDisplayName:function(value){
+                return value;
+            },
+            _getCurrentValue:function(date){
+                return date.getFullYear();
+            },
+            _toDatetime:function(selectedValue, currentDatetime){
+                return new Date(selectedValue, currentDatetime.getMonth(), currentDatetime.getDate(), currentDatetime.getHours(), currentDatetime.getMinutes(), currentDatetime.getSeconds());
+            }
+        });
+    </script>
+</polymer-element>

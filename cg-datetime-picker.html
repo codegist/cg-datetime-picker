@@ -1,0 +1,35 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="cg-time-picker.html">
+<link rel="import" href="cg-date-picker.html">
+
+<polymer-element name="cg-datetime-picker" attributes="datetime label adjustTime">
+    <template>
+        <section horizontal layout>
+            <cg-date-picker datetime="{{_pickerDate}}" on-selection-changed="{{_selectionChanged}}"></cg-date-picker>
+            <div style="width:20px"></div>
+            <cg-time-picker datetime="{{_pickerDate}}" on-selection-changed="{{_selectionChanged}}" adjustTime="{{adjustTime}}"></cg-time-picker>
+        </section>
+    </template>
+    <script>
+        Polymer('cg-datetime-picker', {
+            /**
+             * @attribute datetime
+             * @type Date
+             * @default null
+             */
+            datetime:new Date(),
+            adjustTime:true,
+            _pickerDate:null,
+            _selectionChanged:function(){
+                this.datetime = this.datetime != null ? new Date(this._pickerDate.toISOString()) : this._pickerDate;
+            },
+            datetimeChanged:function(){
+                this.adjustTime = this.datetime ? false : true;
+                this._pickerDate = new Date((this.datetime || new Date()).toISOString());
+            },
+            ready:function(){
+                this.datetimeChanged();
+            }
+        });
+    </script>
+</polymer-element>
