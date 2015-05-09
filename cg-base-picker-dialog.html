@@ -34,6 +34,7 @@
                 this.datetimeChanged();
             },
             domReady:function(){
+                console.log("["+this.constructor.name+"] domReady");
                 // TODO - WHY WE NEED THAT????
                 // TODO - IS IT BECAUSE OF SHADOW DOM THAT core-overlay.html>repositionTarget target.offsetHeight doesn't work as expected??
                 // AND WHY layered="false" doesn't work here???
