@@ -2,15 +2,14 @@
 <link rel="import" href="cg-base-input.html">
 <link rel="import" href="cg-date-picker-dialog.html">
 
-<polymer-element name="cg-date-input" extends="cg-base-input" attributes="datetime dateFormat disabled required">
-    <template>
-        <shadow>
-        <cg-date-picker-dialog id="picker" datetime="{{_pickerDatetime}}"></cg-date-picker-dialog>
-        </shadow>
-    </template>
+<polymer-element name="cg-date-input" extends="cg-base-input" attributes="datetime dateFormat disabled required" constructor="CGDateInput">
     <script>
         Polymer({
-            dateFormat:"DD/MM/YYYY"
+            dateFormat:"DD/MM/YYYY",
+            domReady:function(){
+                this.super();
+                this.$.picker = this.globals.dateDialog || this.appendChild(document.createElement('cg-date-picker-dialog'));
+            },
         });
     </script>
 </polymer-element>

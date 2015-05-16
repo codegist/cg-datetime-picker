@@ -1,11 +1,13 @@
 <link href="../polymer/polymer.html" rel="import">
 <link href="../paper-dialog/paper-action-dialog.html" rel="import">
 <link href="../paper-button/paper-button.html" rel="import">
+<link href="../cg-base/cg-base.html" rel="import">
 
-<polymer-element name="cg-base-picker-dialog" attributes="datetime">
+<polymer-element name="cg-base-picker-dialog" extends="cg-base" attributes="datetime">
     <template></template>
     <script>
         Polymer({
+            listensTo:[],
             /**
              * @attribute datetime
              * @type String
@@ -34,6 +36,7 @@
                 this.datetimeChanged();
             },
             domReady:function(){
+                this.super();
                 console.log("["+this.constructor.name+"] domReady");
                 // TODO - WHY WE NEED THAT????
                 // TODO - IS IT BECAUSE OF SHADOW DOM THAT core-overlay.html>repositionTarget target.offsetHeight doesn't work as expected??
@@ -45,17 +48,7 @@
                 this.ready();
                 this.$.datetimePicker.ready();
                 this.$.dialog.open();
-                closeCallback && this._listenOnce(this, 'datetime-changed', function(){
-                    closeCallback(this.datetime);
-                }.bind(this ));
-            },
-            _listenOnce: function(node, event, fn, args) {
-                var self = this;
-                var listener = function() {
-                    fn.apply(self, args);
-                    node.removeEventListener(event, listener, false);
-                }
-                node.addEventListener(event, listener, false);
+                closeCallback && this.listenOnce('datetime-changed', closeCallback);
             },
             localeChanged: function(){
                 this._intl = {
@@ -89,8 +82,8 @@
                 return s;
             },
             setDate:function(){
-                this.datetime = this._datetime.toISOString();
-                this.fire('datetime-changed', this._datetime);
+                this.datetime = new Date(this._datetime);
+                this.fire('datetime-changed', this.datetime);
             }
 
         });
