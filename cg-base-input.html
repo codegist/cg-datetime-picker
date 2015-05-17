@@ -42,6 +42,7 @@
             _pickerDatetime:null,
             _datetimeFormatted:null,
             _decoratorElement:null,
+            _enableFormattedChangeObs:false,
             domReady:function(){
                 this.super();
                 console.log("["+this.constructor.name+"] domReady");
@@ -49,10 +50,6 @@
                     this._decoratorElement = this.parentElement; // _decoratorElement thing's quite nasty..
                     this._decoratorElement.input = this.$.input; // _decoratorElement thing's quite nasty..
                 }
-//                this.$.picker.addEventListener('datetime-changed', function(e){
-//                    this.datetime = e.detail;
-//                    this.fire("change", this.datetime);
-//                }.bind(this));
             },
             _onInputChange:function(){
                 this.fire("change", this.datetime);
@@ -71,6 +68,7 @@
                 }
             },
             _datetimeFormattedChanged:function(){
+                if(!this._enableFormattedChangeObs) return;
                 var date = moment(this._datetimeFormatted, this.dateFormat, true);
                 if(!date.isValid()) {
                     this.$.input.setCustomValidity("Date is not valid");
@@ -81,9 +79,11 @@
                 }
             },
             datetimeChanged: function () {
+                this._enableFormattedChangeObs = false;
                 this._pickerDatetime = this.datetime ? new Date(this.datetime) : null;
                 this._datetimeFormatted = this.datetime && moment(this.datetime.toISOString(), moment.ISO_8601).format(this.dateFormat);
                 this._decoratorElement &&  this.async(this._decoratorElement.inputAction.bind(this._decoratorElement));
+                this._enableFormattedChangeObs = true;
             }
         });
     </script>
