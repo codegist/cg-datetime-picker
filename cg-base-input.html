@@ -67,13 +67,15 @@
                 }
             },
             _datetimeFormattedChanged:function(oldValue, newValue){
-                if(oldValue == null) return;
+
                 var date = moment(this._datetimeFormatted, this.dateFormat, true);
                 if(!date.isValid()) {
                     this.$.input.setCustomValidity("Date is not valid");
                     this._decoratorElement &&  this.async(this._decoratorElement.inputChanged.bind(this._decoratorElement));
                 }else{
-                    this.datetime = new Date(date.toISOString());
+                    if(oldValue != null) {
+                        this.datetime = new Date(date.toISOString());
+                    }
                     this.$.input.setCustomValidity(null);
                 }
             },
