@@ -105,11 +105,14 @@
             },
             domReady:function(){
                 console.log("["+this.constructor.name+"] domReady");
-                this.datetimeChanged();
+                this.scrollToSelection();
             },
             datetimeChanged: function(){
                 this._currentvalue = this._getCurrentValue(this._getDateTime());
-                this._scrollToSelection();
+                this.scrollToSelection();
+            },
+            scrollToSelection:function(){
+                this.async(this._scrollToSelection,null,1000);
             },
             _scrollToSelection:function(times){
                 var selected = this.$.container.querySelector("div.value[data-value='" + this._currentvalue + "']");
@@ -121,10 +124,10 @@
 
                     // to cater for when dom sizing is not ready due to animation or other
                     if((scrollTop + scrollBottom + selectedTop + selectedBottom) == 0 && (!times || times > 1)) {
-                        return this.job("async-scroll", function(){
-                            var t = typeof times === "number" ? --times : 5;
+                        return this.async(function(){
+                            var t = typeof times === "number" ? --times : 10;
                             this._scrollToSelection(t);
-                        }.bind(this), 2);
+                        }.bind(this), null, 30);
                     }
 
                     // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
