@@ -154,9 +154,6 @@
                 this.datetimeChanged();
                 this._renderMonth();
             },
-            domReady: function(){
-                console.log("["+this.constructor.name+"] domReady");
-            },
             _selectionChanged:function(){
                 var dt = this._getDateTime();
                 this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), 1,
