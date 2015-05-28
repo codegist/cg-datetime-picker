@@ -42,7 +42,8 @@
                 // AND WHY layered="false" doesn't work here???
                 this.$.dialog.addEventListener("core-overlay-open-completed", this.$.dialog.repositionTarget);
             },
-            open: function(datetime, closeCallback) {
+            open: function(datetime, closeCallback, backdrop) {
+                this.$.dialog.backdrop = backdrop != undefined ? backdrop : true;
                 this.datetime = datetime || this.datetime;
                 this.ready();
                 this.$.datetimePicker.ready();

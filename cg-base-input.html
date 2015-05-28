@@ -5,7 +5,7 @@
 
 <script src="../momentjs/min/moment-with-locales.min.js"></script>
 
-<polymer-element name="cg-base-input" extends="cg-base" attributes="datetime dateFormat disabled required" horizontal layout>
+<polymer-element name="cg-base-input" extends="cg-base" attributes="datetime dateFormat disabled required backdrop" horizontal layout>
     <template>
         <style>
             #button {
@@ -19,7 +19,7 @@
                 height:18px!important;
             }
         </style>
-        <input tabindex="0" flex is="core-input" required?="{{required}}" value="{{_datetimeFormatted}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input" on-change="{{_onInputChange}}">
+        <input tabindex="0" flex is="core-input" required?="{{required}}" value="{{datetime | format(self)}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input"">
         <paper-icon-button id="button" tabindex="0" icon="fa:calendar-o" on-tap="{{_openDialog}}" relative noink disabled="{{disabled}}">
             <shadow></shadow>
             <content></content>
@@ -35,12 +35,12 @@
              * @default null
              */
             datetime:null,
+            backdrop:true,
             listensTo:[],
             dateFormat:"DD/MM/YYYY",
             disabled:false,
             required:false,
             _pickerDatetime:null,
-            _datetimeFormatted:null,
             _decoratorElement:null,
             domReady:function(){
                 this.super();
@@ -49,38 +49,36 @@
                     this._decoratorElement.input = this.$.input; // _decoratorElement thing's quite nasty..
                 }
             },
-            _onInputChange:function(){
-                this.fire("change", this.datetime);
-            },
             _openDialog: function() {
                 if(this.disabled) {
                     return;
                 }
                 this.datetimeChanged();
-                this.$.picker.open(this.datetime, function(e){
+                this.$.picker.open(this._pickerDatetime, function(e){
                     this.datetime = e.detail;
                     this.fire("change", this.datetime);
-                }.bind(this));
+                }.bind(this), this.backdrop);
                 if(this._decoratorElement) {
                     this.job("refocus", function(){this._decoratorElement.focused = true;}, 250);
                 }
             },
-            _datetimeFormattedChanged:function(oldValue, newValue){
-
-                var date = moment(this._datetimeFormatted, this.dateFormat, true);
-                if(!date.isValid()) {
-                    this.$.input.setCustomValidity("Date is not valid");
-                    this._decoratorElement &&  this.async(this._decoratorElement.inputChanged.bind(this._decoratorElement));
-                }else{
-                    if(oldValue != null) {
-                        this.datetime = new Date(date.toISOString());
+            format:{
+                toModel:function(value, scope){
+                    var date = moment(value, scope.dateFormat, true);
+                    if(!date.isValid()) {
+                        scope.$.input.setCustomValidity("Date is not valid");
+                        scope._decoratorElement &&  this.async(scope._decoratorElement.inputChanged.bind(scope._decoratorElement));
+                    }else{
+                        this.$.input.setCustomValidity(null);
                     }
-                    this.$.input.setCustomValidity(null);
-                }
+                    return date;
+                },
+                toDOM:function(value, scope){
+                    return value ? moment(value.toISOString(), moment.ISO_8601).format(scope.dateFormat) : undefined;
+                },
             },
             datetimeChanged: function () {
                 this._pickerDatetime = this.datetime ? new Date(this.datetime) : null;
-                this._datetimeFormatted = this.datetime && moment(this.datetime.toISOString(), moment.ISO_8601).format(this.dateFormat);
                 this._decoratorElement &&  this.async(this._decoratorElement.inputAction.bind(this._decoratorElement));
             }
         });
