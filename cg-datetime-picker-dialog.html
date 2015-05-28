@@ -34,7 +34,7 @@
 </style>
 <polymer-element name="cg-datetime-picker-dialog" extends="cg-base-picker-dialog" attributes="datetime headingLabel">
     <template>
-        <paper-action-dialog id="dialog" class="cg-datetime-picker-dialog" backdrop layered="true">
+        <paper-action-dialog id="dialog" class="cg-datetime-picker-dialog" layered="true">
             <section layout vertical id="container">
                 <div layout horizontal center-justified class="header">
                     {{headingLabel}}&nbsp;{{ _monthShortName }}&nbsp;{{ _dayOfMonth }}&nbsp;{{ _formattedYear }},&nbsp;{{_hours}}:{{_minutes}}
