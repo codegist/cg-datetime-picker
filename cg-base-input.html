@@ -13,9 +13,10 @@
             padding:0px;
         }
         #input {
-            width:100%!important;
+            width:100%;
+            margin-right:5px;
         }
-        #button iron-icon {
+        #button ::content iron-icon {
             width:18px;
             height:18px;
         }
@@ -24,7 +25,7 @@
         }
     </style>
     <template>
-        <input tabindex="0" is="iron-input" required$="{{required}}" value$="{{formattedDate}}" disabled$="{{disabled}}" on-tap="_openDialog" id="input">
+        <input tabindex="0" is="iron-input" required$="{{required}}" readonly value$="{{formattedDate}}" disabled$="{{disabled}}" on-focus="_openDialog" on-tap="_openDialog" id="input">
         <paper-icon-button id="button" tabindex="0" icon="fa:calendar-o" on-tap="_openDialog" relative noink disabled$="{{disabled}}"></paper-icon-button>
     </template>
 </dom-module>
@@ -46,63 +47,38 @@
             },
             dateFormat:{
                 type:String,
+                value:null,
             },
             datetime:{
                 type:Date,
                 notify:true,
+                value:null,
                 observer:'datetimeChanged'
-            },
-            formattedDate:{
-                computed:"formatDate(datetime, dateFormat)"
             },
             backdrop:{
                 type:Boolean,
                 notify:true,
-            }
+            },
+            formattedDate:{
+                type: String,
+                computed:'formatDate(datetime, dateFormat)'
+            },
         },
         _pickerDatetime:null,
-//        _decoratorElement:null,
-        ready:function(){
-            console.log()
-//            if(this.parentElement.tagName.toLowerCase() == "paper-input-decorator") {
-//                this._decoratorElement = this.parentElement; // _decoratorElement thing's quite nasty..
-//                this._decoratorElement.input = this.$.input; // _decoratorElement thing's quite nasty..
-//            }
-        },
         _openDialog: function() {
             if(this.disabled) {
                 return;
             }
-            //this.datetimeChanged();
             this.$.picker.open(this._pickerDatetime, function(e){
                 this.datetime = e.detail;
                 this.fire("date-changed", this.datetime);
             }.bind(this), this.backdrop);
-//            if(this._decoratorElement) {
-//                this.job("refocus", function(){this._decoratorElement.focused = true;}, 250);
-//            }
         },
         formatDate:function(date, format){
             return date ? moment(date.toISOString(), moment.ISO_8601).format(format) : undefined;
         },
-        format:{
-            toModel:function(value, scope){
-                var date = moment(value, scope.dateFormat, true);
-                if(!date.isValid()) {
-                    scope.$.input.setCustomValidity("Date is not valid");
-//                    scope._decoratorElement &&  this.async(scope._decoratorElement.inputChanged.bind(scope._decoratorElement));
-                }else{
-                    this.$.input.setCustomValidity(null);
-                }
-                return date;
-            },
-            toDOM:function(value, scope){
-                return value ? moment(value.toISOString(), moment.ISO_8601).format(scope.dateFormat) : undefined;
-            },
-        },
         datetimeChanged: function () {
             this._pickerDatetime = this.datetime ? new Date(this.datetime) : null;
-//            this._decoratorElement &&  this.async(this._decoratorElement.inputAction.bind(this._decoratorElement));
         }
     });
 </script>

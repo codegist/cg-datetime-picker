@@ -1,14 +1,13 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../cg-base/cg-base-behavior.html">
 <link rel="import" href="cg-base-input.html">
-<link rel="import" href="cg-date-picker-dialog.html">
 
 <dom-module id="cg-date-input">
 <template>
     <cg-base-input id="input"
                    disabled="{{disabled}}"
                    required="{{required}}"
-                   dateFormat="{{dateFormat}}"
+                   date-format="{{dateFormat}}"
                    datetime="{{datetime}}"
                    backdrop="{{backdrop"
                    on-change="onChange"></cg-base-input>
@@ -39,7 +38,9 @@
         },
         behaviors:[CG.BaseBehavior],
         ready:function(){
-            this.$.input.$.picker = this.globals.dateDialog || this.appendChild(document.createElement('cg-date-picker-dialog'));
+            this.$.input.$.picker = this.globals.dateDialog || this.importHref("cg-date-picker-dialog.html", function(){
+                this.$.input.$.picker = this.appendChild(document.createElement('cg-date-picker-dialog'));
+            });
         },
         onChange:function(e){
             this.fire("change", e.detail);

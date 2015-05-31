@@ -1,15 +1,49 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cg-base/cg-base-behavior.html">
 <link rel="import" href="cg-base-input.html">
-<link rel="import" href="cg-datetime-picker-dialog.html">
 
-<polymer-element name="cg-datetime-input" extends="cg-base-input" attributes="datetime dateFormat disabled required backdrop" constructor="CGDateTimeInput">
-    <script>
-        Polymer({
-            dateFormat:"DD/MM/YYYY HH:mm",
-            domReady:function(){
-                this.super();
-                this.$.picker = this.globals.datetimeDialog || this.appendChild(document.createElement('cg-datetime-picker-dialog'));
+<dom-module id="cg-datetime-input">
+    <template>
+        <cg-base-input id="input"
+                       disabled="{{disabled}}"
+                       required="{{required}}"
+                       date-format="{{dateFormat}}"
+                       datetime="{{datetime}}"
+                       backdrop="{{backdrop"
+                       on-change="onChange"></cg-base-input>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-datetime-input',
+        properties:{
+            disabled:{
+                type:Boolean
+            },
+            required:{
+                type:Boolean
+            },
+            dateFormat:{
+                type:String,
+                value:"DD/MM/YYYY HH:mm"
+            },
+            datetime:{
+                type:Date,
+                notify:true
+            },
+            backdrop:{
+                type:Boolean,
+                notify:true,
             }
-        });
-    </script>
-</polymer-element>
+        },
+        behaviors:[CG.BaseBehavior],
+        ready:function(){
+            this.$.input.$.picker = this.globals.datetimeDialog || this.importHref("cg-datetime-picker-dialog.html", function(){
+                        this.$.input.$.picker = this.appendChild(document.createElement('cg-datetime-picker-dialog'));
+                    });
+        },
+        onChange:function(e){
+            this.fire("change", e.detail);
+        }
+    });
+</script>
