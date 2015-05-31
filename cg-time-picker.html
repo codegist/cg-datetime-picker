@@ -1,98 +1,120 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
 
-<polymer-element name="cg-time-picker" attributes="datetime label">
+<dom-module id="cg-time-picker">
+    <style>
+        .picker-arrow {
+            padding:0px;
+            outline:0;
+        }
+        paper-icon-button ::content iron-icon {
+            height:64px;
+            width:64px;
+            color:#009688;
+        }
+        .picker,
+        .divider {
+            border: none;
+            text-align: right;
+            font-size: 6.1rem;
+            line-height: 3rem;
+            width: 8.4rem;
+            color: #2A2A2A;
+        }
+        .divider {
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+            width: 1.5rem;
+        }
+        .wrapper {
+            /*@apply(--layout-horizontal);*/
+            @apply(--layout-inline);
+        }
+        .wrapper .picker-wrapper {
+            @apply(--layout-flex);
+            @apply(--layout-vertical);
+        }
+        .wrapper paper-icon-button {
+            @apply(--layout-center);
+            @apply(--layout-vertical);
+        }
+    </style>
     <template>
-        <style>
-            :host .picker-arrow {
-                padding:0px;
-                outline:0;
-            }
-            :host /deep/ core-icon {
-                height:64px!important;
-                width:64px!important;
-                color:rgb(0, 150, 136)!important;
-            }
-            :host .picker,
-            :host .divider {
-                border: none;
-                text-align: right;
-                font-size: 6.1rem;
-                line-height: 3rem;
-                width: 8.4rem;
-                color: rgba(0,0,0,.73);
-            }
-            :host .divider {
-                width: 1.5rem;
-            }
-        </style>
-        <section horizontal layout>
-            <div flex layout vertical>
-                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-up" data-target="hours" data-step="1" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
-                <input tabindex="0" id="hours" readonly type="number" data-min="0" data-max="23" value="{{_hours}}" class="picker"/>
-                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-down" data-target="hours" data-step="1" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+        <div class="wrapper">
+            <div class="picker-wrapper">
+                <paper-icon-button tabindex="0" icon="fa:caret-up" data-target="hours" data-step="1" data-add="1" on-tap="_add" class="picker-arrow"></paper-icon-button>
+                <input tabindex="0" id="hours" readonly type="number" data-min="0" data-max="23" value$="{{_hours}}" class="picker"/>
+                <paper-icon-button tabindex="0" icon="fa:caret-down" data-target="hours" data-step="1" data-add="-1" on-tap="_add" class="picker-arrow"></paper-icon-button>
             </div>
-            <div class="divider" horizontal layout center>:</div>
-            <div flex layout vertical>
-                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-up" data-target="minutes" data-step="{{minuteStep}}" data-add="1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
-                <input tabindex="0" id="minutes" readonly type="number" data-min="{{_minuteLimitDown}}" data-max="{{_minuteLimitUp}}" value="{{_minutes}}" class="picker"/>
-                <core-icon-button tabindex="0" vertical layout center icon="fa:caret-down" data-target="minutes" data-step="{{minuteStep}}" data-add="-1" on-tap="{{_add}}" class="picker-arrow"></core-icon-button>
+            <div class="divider">:</div>
+            <div class="picker-wrapper">
+                <paper-icon-button tabindex="0" icon="fa:caret-up" data-target="minutes" data-step$="[[minuteStep]]" data-add="1" on-tap="_add" class="picker-arrow"></paper-icon-button>
+                <input tabindex="0" id="minutes" readonly type="number" data-min$="[[_minuteLimitDown]]" data-max$="[[_minuteLimitUp]]" value$="{{_minutes}}" class="picker"/>
+                <paper-icon-button tabindex="0" icon="fa:caret-down" data-target="minutes" data-step$="[[minuteStep]]" data-add="-1" on-tap="_add" class="picker-arrow"></paper-icon-button>
             </div>
-        </section>
+        </div>
     </template>
-    <script>
-        Polymer('cg-time-picker', {
-            /**
-             * @attribute datetime
-             * @type Date
-             * @default null
-             */
-            datetime:null,
-            minuteStep:15,
-            _minuteLimitDown:0,
-            _minuteLimitUp:60,
-            _hours:null,
-            _minutes:null,
-            ready:function(){
-                this.datetimeChanged();
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-time-picker',
+        properties:{
+            datetime:{
+                type:Date,
+                value:new Date(),
+                notify:true,
+                observer:'datetimeChanged',
             },
-            datetimeChanged:function(){
-                this.adjustTime = this.datetime ? this.adjustTime : true;
-                var datetime = this.datetime || new Date();
-                this._hours = datetime.getHours();
-                this._minutes = datetime.getMinutes();
+            minuteStep: {
+                type:Number,
+                value:15,
             },
-            _add:function(e){
-                var step = Number(e.target.dataset.step);
-                var add = Number(e.target.dataset.add);
-                var picker =  this.$[e.target.dataset.target];
-                var limitUp = Number(picker.dataset.max);
-                var limitDown = Number(picker.dataset.min);
-                var newVal = this._adjustValueFor(picker.value, step, limitDown, limitUp, add);
-
-                this.datetime = this.datetime || new Date();
-                switch(e.target.dataset.target){
-                    case "hours":
-                        this.datetime.setHours(newVal);
-                        break;
-                    case "minutes":
-                        this.datetime.setMinutes(newVal);
-                        break;
-                }
-                this.datetime = new Date(this.datetime.toISOString());
-                this.fire('selection-changed', this.datetime);
-            },
-            _adjustValueFor:function(value, step, limitDown, limitUp, add){
-                value = Number(value);
-                var newVal = ((Math.floor(value / step) + add) * step);
-                if(newVal < limitDown) {
-                    newVal = limitDown;
-                }else if(newVal > limitUp) {
-                    newVal = limitUp;
-                }
-                return newVal;
+            adjustTime: {
+                type:Boolean,
+                value:false,
             }
-        });
-    </script>
-</polymer-element>
+        },
+        _minuteLimitDown:0,
+        _minuteLimitUp:60,
+        _hours:null,
+        _minutes:null,
+        datetimeChanged:function(){
+            this.adjustTime = this.datetime ? this.adjustTime : true;
+            var datetime = this.datetime || new Date();
+            this._hours = datetime.getHours();
+            this._minutes = datetime.getMinutes();
+        },
+        _add:function(e){
+            var step = Number(e.currentTarget.dataset.step);
+            var add = Number(e.currentTarget.dataset.add);
+            var picker =  this.$[e.currentTarget.dataset.target];
+            var limitUp = Number(picker.dataset.max);
+            var limitDown = Number(picker.dataset.min);
+            var newVal = this._adjustValueFor(picker.value, step, limitDown, limitUp, add);
+
+            this.datetime = this.datetime || new Date();
+            switch(e.currentTarget.dataset.target){
+                case "hours":
+                    this.datetime.setHours(newVal);
+                    break;
+                case "minutes":
+                    this.datetime.setMinutes(newVal);
+                    break;
+            }
+            this.datetime = new Date(this.datetime.toISOString());
+            this.fire('date-changed', this.datetime);
+        },
+        _adjustValueFor:function(value, step, limitDown, limitUp, add){
+            value = Number(value);
+            var newVal = ((Math.floor(value / step) + add) * step);
+            if(newVal < limitDown) {
+                newVal = limitDown;
+            }else if(newVal > limitUp) {
+                newVal = limitUp;
+            }
+            return newVal;
+        }
+    });
+</script>

@@ -1,35 +1,48 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="cg-time-picker.html">
 <link rel="import" href="cg-date-picker.html">
 
-<polymer-element name="cg-datetime-picker" attributes="datetime label adjustTime">
+<dom-module id="cg-datetime-picker">
+    <style>
+        .wrapper {
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+        }
+        .divider {
+            width:20px;
+        }
+    </style>
     <template>
-        <section horizontal layout>
-            <cg-date-picker datetime="{{_pickerDate}}" on-selection-changed="{{_selectionChanged}}"></cg-date-picker>
-            <div style="width:20px"></div>
-            <cg-time-picker datetime="{{_pickerDate}}" on-selection-changed="{{_selectionChanged}}" adjustTime="{{adjustTime}}"></cg-time-picker>
-        </section>
+        <div class="wrapper">
+            <cg-date-picker datetime="{{_pickerDate}}" on-date-changed="_selectionChanged"></cg-date-picker>
+            <div class="divider"></div>
+            <cg-time-picker datetime="{{_pickerDate}}" adjust-time="{{adjustTime}}" on-date-changed="_selectionChanged"></cg-time-picker>
+        </div>
     </template>
-    <script>
-        Polymer('cg-datetime-picker', {
-            /**
-             * @attribute datetime
-             * @type Date
-             * @default null
-             */
-            datetime:new Date(),
-            adjustTime:true,
-            _pickerDate:null,
-            _selectionChanged:function(){
-                this.datetime = this.datetime != null ? new Date(this._pickerDate.toISOString()) : this._pickerDate;
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-datetime-picker',
+        properties:{
+            datetime:{
+                type:Date,
+                notify:true,
+                observer:'datetimeChanged',
             },
-            datetimeChanged:function(){
-                this.adjustTime = this.datetime ? false : true;
-                this._pickerDate = new Date((this.datetime || new Date()).toISOString());
-            },
-            ready:function(){
-                this.datetimeChanged();
+            adjustTime:{
+                type:Boolean,
+                value:false,
             }
-        });
-    </script>
-</polymer-element>
+        },
+        _pickerDate:null,
+        _selectionChanged:function(){
+            this.datetime = this.datetime != null ? new Date(this._pickerDate.toISOString()) : this._pickerDate;
+            this.fire("date-changed", this.datetime);
+        },
+        datetimeChanged:function(){
+            this.adjustTime = this.datetime ? false : true;
+            this._pickerDate = new Date((this.datetime || new Date()).toISOString());
+        }
+    });
+</script>

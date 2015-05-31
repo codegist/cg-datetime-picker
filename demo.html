@@ -3,164 +3,192 @@
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <title>cg-datetime-input Demo</title>
-    <link rel="import" href="../paper-input/paper-input-decorator.html">
-    <link rel="import" href="cg-time-picker.html">
-    <link rel="import" href="cg-datetime-input.html">
-    <link rel="import" href="cg-date-input.html">
-    <link rel="import" href="cg-datetime-picker.html">
-    <link rel="import" href="cg-time-picker.html">
-    <link rel="import" href="cg-date-picker.html">
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <!--<link rel="import" href="../paper-input/paper-input-decorator.html">-->
+    <!--<link rel="import" href="cg-time-picker.html">-->
+    <!--<link rel="import" href="cg-datetime-input.html">-->
+    <!--<link rel="import" href="cg-date-input.html">-->
+    <!--<link rel="import" href="cg-datetime-picker.html">-->
+    <!--<link rel="import" href="cg-time-picker.html">-->
+    <!--<link rel="import" href="cg-date-picker.html">-->
     <link rel="import" href="cg-year-picker.html">
     <link rel="import" href="cg-month-picker.html">
-    <style>
-        .demo {
-            margin-boottom:60px;
-            min-height: 300px;
-        }
-        .demo-item {
-            padding: 2px;
-            min-height: 300px;
-        }
-    </style>
+    <link rel="import" href="cg-time-picker.html">
+    <link rel="import" href="cg-date-picker.html">
+    <link rel="import" href="cg-datetime-picker.html">
+    <link rel="import" href="cg-date-picker-dialog.html">
+    <link rel="import" href="cg-datetime-picker-dialog.html">
+    <link rel="import" href="cg-date-input.html">
 </head>
 
 
-<body unresolved fullbleed layout vertical center center-justified>
-
-<template id="sandbox" is="auto-binding">
-    <section layout vertical left>
-        <!--<h2>Time Picker</h2>-->
-        <!--<section layout horizontal wrap class="demo">-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime1}}"</h1>-->
-                <!--<cg-time-picker datetime="{{myObject.datetime1}}"></cg-time-picker>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime2}}"</h1>-->
-                <!--<cg-time-picker datetime="{{myObject.datetime2}}"></cg-time-picker>-->
-            <!--</section>-->
-        <!--</section>-->
-        <!--<h2>Year Picker</h2>-->
-        <!--<section layout horizontal wrap class="demo">-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime1}}"</h1>-->
-                <!--<cg-year-picker datetime="{{myObject.datetime1}}"></cg-year-picker>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime2}}"</h1>-->
-                <!--<cg-year-picker datetime="{{myObject.datetime2}}"></cg-year-picker>-->
-            <!--</section>-->
-        <!--</section>-->
-        <!--<h2>Month Picker</h2>-->
-        <!--<section layout horizontal wrap class="demo">-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime1}}"</h1>-->
-                <!--<cg-month-picker datetime="{{myObject.datetime1}}"></cg-month-picker>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime2}}"</h1>-->
-                <!--<cg-month-picker datetime="{{myObject.datetime2}}"></cg-month-picker>-->
-            <!--</section>-->
-        <!--</section>-->
-        <!--<h2>Date Picker</h2>-->
-        <!--<section layout horizontal wrap class="demo">-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime1}}"</h1>-->
-                <!--<cg-date-picker datetime="{{myObject.datetime1}}"></cg-date-picker>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime2}}"</h1>-->
-                <!--<cg-date-picker datetime="{{myObject.datetime2}}"></cg-date-picker>-->
-            <!--</section>-->
-        <!--</section>-->
-        <!--<h2>Datetime Picker</h2>-->
-        <!--<section layout horizontal wrap class="demo">-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime1}}"</h1>-->
-                <!--<cg-datetime-picker datetime="{{myObject.datetime1}}"></cg-datetime-picker>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with "{{myObject.datetime2}}"</h1>-->
-                <!--<cg-datetime-picker datetime="{{myObject.datetime2}}"></cg-datetime-picker>-->
-            <!--</section>-->
-        <!--</section>-->
-        <!--<h2>Date Input Demo</h2>-->
+<body>
+<template is="dom-bind" id="sandbox">
+    datetime: <div>{{datetime}}</div>
+    <!--<cg-year-picker datetime="{{datetime}}"></cg-year-picker>-->
+    <!--<cg-month-picker datetime="{{datetime}}"></cg-month-picker>-->
+    <!--<cg-time-picker datetime="{{datetime}}"></cg-time-picker>-->
+    <!--<cg-date-picker datetime="{{datetime}}"></cg-date-picker>-->
+    <!--<cg-datetime-picker datetime="{{datetime}}"></cg-datetime-picker>-->
+    <cg-date-input datetime="{{datetime}}"></cg-date-input>
+    <!--</br>-->
+    <!--</br>-->
+    <!--<button on-tap="openDateDialog">open date dialog</button>-->
+    <!--<cg-date-picker-dialog datetime="{{datetime}}"></cg-date-picker-dialog>-->
+    <!--<button on-tap="openDateTimeDialog">open date time dialog</button>-->
+    <!--<cg-datetime-picker-dialog datetime="{{datetime}}"></cg-datetime-picker-dialog>-->
+</template>
+<!--<template id="sandbox" is="auto-binding">-->
+    <!--<section layout vertical left>-->
+        <!--&lt;!&ndash;<h2>Time Picker</h2>&ndash;&gt;-->
+        <!--&lt;!&ndash;<section layout horizontal wrap class="demo">&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime1}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-time-picker datetime="{{myObject.datetime1}}"></cg-time-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime2}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-time-picker datetime="{{myObject.datetime2}}"></cg-time-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;<h2>Year Picker</h2>&ndash;&gt;-->
+        <!--&lt;!&ndash;<section layout horizontal wrap class="demo">&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime1}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-year-picker datetime="{{myObject.datetime1}}"></cg-year-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime2}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-year-picker datetime="{{myObject.datetime2}}"></cg-year-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;<h2>Month Picker</h2>&ndash;&gt;-->
+        <!--&lt;!&ndash;<section layout horizontal wrap class="demo">&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime1}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-month-picker datetime="{{myObject.datetime1}}"></cg-month-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime2}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-month-picker datetime="{{myObject.datetime2}}"></cg-month-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;<h2>Date Picker</h2>&ndash;&gt;-->
+        <!--&lt;!&ndash;<section layout horizontal wrap class="demo">&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime1}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-date-picker datetime="{{myObject.datetime1}}"></cg-date-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime2}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-date-picker datetime="{{myObject.datetime2}}"></cg-date-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;<h2>Datetime Picker</h2>&ndash;&gt;-->
+        <!--&lt;!&ndash;<section layout horizontal wrap class="demo">&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime1}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-datetime-picker datetime="{{myObject.datetime1}}"></cg-datetime-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with "{{myObject.datetime2}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-datetime-picker datetime="{{myObject.datetime2}}"></cg-datetime-picker>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;<h2>Date Input Demo</h2>&ndash;&gt;-->
+        <!--&lt;!&ndash;<section layout horizontal wrap class="demo">&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with String date time "{{myObject.datetimestring1}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-date-input datetime="{{myObject.datetimestring1}}"></cg-date-input>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with String date time "{{myObject.datetimestring2}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-date-input datetime="{{myObject.datetimestring2}}"></cg-date-input>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with String date time "{{myObject.datetimestring3}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-date-input datetime="{{myObject.datetimestring3}}"></cg-date-input>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+            <!--&lt;!&ndash;<section class="demo-item">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h1>with String date time "{{myObject.datetimestring4}}"</h1>&ndash;&gt;-->
+                <!--&lt;!&ndash;<cg-date-input datetime="{{myObject.datetimestring4}}"></cg-date-input>&ndash;&gt;-->
+            <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--&lt;!&ndash;</section>&ndash;&gt;-->
+        <!--<h2>Datetime Input Demo</h2>-->
         <!--<section layout horizontal wrap class="demo">-->
             <!--<section class="demo-item">-->
                 <!--<h1>with String date time "{{myObject.datetimestring1}}"</h1>-->
-                <!--<cg-date-input datetime="{{myObject.datetimestring1}}"></cg-date-input>-->
+                <!--<cg-datetime-input datetime="{{myObject.datetimestring1}}"></cg-datetime-input>-->
             <!--</section>-->
             <!--<section class="demo-item">-->
                 <!--<h1>with String date time "{{myObject.datetimestring2}}"</h1>-->
-                <!--<cg-date-input datetime="{{myObject.datetimestring2}}"></cg-date-input>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with String date time "{{myObject.datetimestring3}}"</h1>-->
-                <!--<cg-date-input datetime="{{myObject.datetimestring3}}"></cg-date-input>-->
-            <!--</section>-->
-            <!--<section class="demo-item">-->
-                <!--<h1>with String date time "{{myObject.datetimestring4}}"</h1>-->
-                <!--<cg-date-input datetime="{{myObject.datetimestring4}}"></cg-date-input>-->
+                <!--<cg-datetime-input datetime="{{myObject.datetimestring2}}"></cg-datetime-input>-->
             <!--</section>-->
         <!--</section>-->
-        <h2>Datetime Input Demo</h2>
-        <section layout horizontal wrap class="demo">
-            <section class="demo-item">
-                <h1>with String date time "{{myObject.datetimestring1}}"</h1>
-                <cg-datetime-input datetime="{{myObject.datetimestring1}}"></cg-datetime-input>
-            </section>
-            <section class="demo-item">
-                <h1>with String date time "{{myObject.datetimestring2}}"</h1>
-                <cg-datetime-input datetime="{{myObject.datetimestring2}}"></cg-datetime-input>
-            </section>
-        </section>
-        <h2>Date/Time input in form demo</h2>
-        <section>
-            <div horizontal layout wrap class="party-info-form">
-                <paper-input-decorator label="Birthdate" floatingLabel error="input is required!" autoValidate>
-                    <cg-date-input></cg-date-input>
-                </paper-input-decorator>
-                <paper-input-decorator label="DNI" floatingLabel error="input is required!" autoValidate>
-                    <input is="core-input" required>
-                </paper-input-decorator>
-                <paper-input-decorator label="Address" floatingLabel error="input is required!" autoValidate>
-                    <input is="core-input" required>
-                </paper-input-decorator>
-                <paper-input-decorator label="Birthdate" floatingLabel error="input is required!" autoValidate>
-                    <cg-datetime-input></cg-datetime-input>
-                </paper-input-decorator>
-                <paper-input-decorator label="Mobile phone" floatingLabel error="input is required!" autoValidate>
-                    <input is="core-input" required>
-                </paper-input-decorator>
-                <paper-input-decorator label="Fixed phone" floatingLabel error="input is required!" autoValidate>
-                    <input is="core-input" required>
-                </paper-input-decorator>
-            </div>
-        </section>
-    </section>
-</template>
+        <!--<h2>Date/Time input in form demo</h2>-->
+        <!--<section>-->
+            <!--<div horizontal layout wrap class="party-info-form">-->
+                <!--<paper-input-decorator label="Birthdate" floatingLabel error="input is required!" autoValidate>-->
+                    <!--<cg-date-input></cg-date-input>-->
+                <!--</paper-input-decorator>-->
+                <!--<paper-input-decorator label="DNI" floatingLabel error="input is required!" autoValidate>-->
+                    <!--<input is="core-input" required>-->
+                <!--</paper-input-decorator>-->
+                <!--<paper-input-decorator label="Address" floatingLabel error="input is required!" autoValidate>-->
+                    <!--<input is="core-input" required>-->
+                <!--</paper-input-decorator>-->
+                <!--<paper-input-decorator label="Birthdate" floatingLabel error="input is required!" autoValidate>-->
+                    <!--<cg-datetime-input></cg-datetime-input>-->
+                <!--</paper-input-decorator>-->
+                <!--<paper-input-decorator label="Mobile phone" floatingLabel error="input is required!" autoValidate>-->
+                    <!--<input is="core-input" required>-->
+                <!--</paper-input-decorator>-->
+                <!--<paper-input-decorator label="Fixed phone" floatingLabel error="input is required!" autoValidate>-->
+                    <!--<input is="core-input" required>-->
+                <!--</paper-input-decorator>-->
+            <!--</div>-->
+        <!--</section>-->
+    <!--</section>-->
+<!--</template>-->
 
 <script>
-    window.addEventListener('template-bound', function(){
-        var sandbox = document.getElementById('sandbox');
-
-        sandbox.myObject = {
-            datetime1:new Date("2016-02-24T13:24:00.000Z"),
-            datetime2:null,
-            datetimestring1:new Date("2016-02-24T13:24:00.000Z"),
-            datetimestring2:null,
-//            datetimestring1:"2016-02-24T13:24:00.000Z",
-//            datetimestring2:null,
-//            datetimestring3:"",
-//            datetimestring4:"dsfds"
+//    var yearPicker = document.querySelector('cg-year-picker');
+//    yearPicker.datetime = new Date("2016-02-24T13:24:00.000Z");
+//    var datetime = yearPicker.datetime;
+    window.addEventListener('WebComponentsReady', function() {
+        var sandbox =  document.querySelector("#sandbox");
+        sandbox.datetime = new Date("2016-07-24T13:24:00.000Z");
+        sandbox.openDateDialog = function(){
+            document.querySelector("cg-date-picker-dialog").open(sandbox.datetime, function(e){
+                console.log("cg-date-picker-dialog callback")
+            });
         }
-
-//        var inputs = document.querySelectorAll('paper-input-decorator');
-//        for (var i = 0; i < inputs.length; i++) {
-//            inputs[i].disabled = true;
-//            inputs[i].querySelectorAll("input,cg-date-input")[0].disabled = true;
-//        }
+        sandbox.openDateTimeDialog = function(){
+            document.querySelector("cg-datetime-picker-dialog").open(sandbox.datetime, function(e){
+                console.log("cg-datetime-picker-dialog callback")
+            });
+        }
     });
+//    window.addEventListener('template-bound', function(){
+//        var sandbox = document.getElementById('sandbox');
+//
+//        sandbox.myObject = {
+//            datetime1:new Date("2016-02-24T13:24:00.000Z"),
+//            datetime2:null,
+//            datetimestring1:new Date("2016-02-24T13:24:00.000Z"),
+//            datetimestring2:null,
+////            datetimestring1:"2016-02-24T13:24:00.000Z",
+////            datetimestring2:null,
+////            datetimestring3:"",
+////            datetimestring4:"dsfds"
+//        }
+//
+////        var inputs = document.querySelectorAll('paper-input-decorator');
+////        for (var i = 0; i < inputs.length; i++) {
+////            inputs[i].disabled = true;
+////            inputs[i].querySelectorAll("input,cg-date-input")[0].disabled = true;
+////        }
+//    });
 </script>
 
 </body>

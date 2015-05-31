@@ -1,53 +1,66 @@
-<link href="../polymer/polymer.html" rel="import">
-<link href="../paper-dialog/paper-action-dialog.html" rel="import">
-<link href="../paper-button/paper-button.html" rel="import">
-<link href="cg-base-picker-dialog.html" rel="import">
-<link href="cg-datetime-picker.html" rel="import">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="cg-base-picker-dialog-behavior.html">
+<link rel="import" href="cg-datetime-picker.html">
 
-<style shim-shadowdom>
-    html /deep/ .cg-datetime-picker-dialog::shadow #scroller {
-        width: 624px;
-        height: 294px;
-        overflow:hidden;
-        padding:0px;
-    }
-    html /deep/ .cg-datetime-picker-dialog  {
-        font-family:sans-serif;
-    }
+<dom-module id="cg-datetime-picker-dialog">
+    <style>
+        :host {
+            font-family:sans-serif;
+        }
 
-    html /deep/ .cg-datetime-picker-dialog::shadow .day {
-        font-size:1rem;
-    }
-
-    html /deep/ .cg-datetime-picker-dialog::shadow #actions {
-        background-color: #009688;
-        padding: 0.7rem;
-        font-size: 1.2rem;
-        color: #ffffff;
-    }
-    html /deep/ .cg-datetime-picker-dialog .header {
-        background-color:#00796b;
-        color:#e1e1e1;
-        line-height:2.4rem;
-        font-size:1.2rem;
-    }
-</style>
-<polymer-element name="cg-datetime-picker-dialog" extends="cg-base-picker-dialog" attributes="datetime headingLabel">
+        .buttons {
+            background-color: #009688;
+            padding: 0.7rem;
+        }
+        .buttons paper-button {
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+        .header {
+            background-color:#00796b;
+            color:#e1e1e1;
+            line-height:2.4rem;
+            font-size:1.2rem;
+        }
+        #container {
+            @apply(--layout-vertical);
+            padding:0px;
+            margin:0px;
+            width: 624px;
+            /*height: 294px;*/
+        }
+        .header {
+            @apply(--layout-horizontal);
+            @apply(--layout-center-justified);
+        }
+    </style>
     <template>
-        <paper-action-dialog id="dialog" class="cg-datetime-picker-dialog" layered="true">
-            <section layout vertical id="container">
-                <div layout horizontal center-justified class="header">
-                    {{headingLabel}}&nbsp;{{ _monthShortName }}&nbsp;{{ _dayOfMonth }}&nbsp;{{ _formattedYear }},&nbsp;{{_hours}}:{{_minutes}}
+        <paper-dialog id="dialog" modal>
+            <div layout vertical id="container">
+                <div class="header">
+                    <span>[[headingLabel]]</span>&nbsp;
+                    <span>[[_monthShortName]]</span>&nbsp;
+                    <span>[[_dayOfMonth]]</span>&nbsp;
+                    <span>[[_formattedYear]]</span>,&nbsp;
+                    <span>[[_hours]]</span>:<span>[[_minutes]]</span>
                 </div>
                 <div flex>
-                    <cg-datetime-picker flex datetime="{{_datetime}}" id="datetimePicker"></cg-datetime-picker>
+                    <cg-datetime-picker flex datetime="{{_datetime}}" id="datetimePicker" on-date-changed="onDateChange"></cg-datetime-picker>
                 </div>
-            </section>
-            <paper-button affirmative tabindex="0">Cancel</paper-button>
-            <paper-button affirmative on-tap={{setDate}} tabindex="0">OK</paper-button>
-        </paper-action-dialog>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss tabindex="0">Cancel</paper-button>
+                <paper-button dialog-confirm on-tap="setDate" tabindex="0">OK</paper-button>
+            </div>
+        </paper-dialog>
     </template>
-    <script>
-        Polymer('cg-datetime-picker-dialog', {});
-    </script>
-</polymer-element>
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-datetime-picker-dialog',
+        behaviors:[CG.CGBasePickerDialogBehavior]
+    });
+</script>

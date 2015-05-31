@@ -1,0 +1,77 @@
+<link href="../polymer/polymer.html" rel="import">
+<link href="../cg-base/cg-base-behavior.html" rel="import">
+
+<script>
+    var CGBasePickerDialogBehaviorImpl = {
+        properties:{
+            listensTo:{
+                type:Array,
+                value:[]
+            },
+            locale: {
+                value:window.navigator.userLanguage || window.navigator.language,
+                observer:'localeChanged'
+            },
+            datetime:{
+                type:Date,
+                value:new Date(),
+                notify:true,
+                observer:'datetimeChanged'
+            },
+            _datetime:{
+                type:Date,
+                value:new Date(),
+                observer:'_datetimeChanged'
+            },
+        },
+        _year:0,
+        _dayOfWeek: '',
+        _dayOfMonth: 0,
+        _monthShortName: '',
+        _formattedYear: '',
+        _intl: {},
+        open: function(datetime, closeCallback, backdrop) {
+//            this.$.dialog.backdrop = backdrop != undefined ? backdrop : true;
+            this.datetime = datetime || this.datetime;
+            this.$.datetimePicker.ready();
+            this.$.dialog.open();
+            closeCallback && this.listenOnce('date-changed', closeCallback);
+        },
+        localeChanged: function(){
+            this._intl = {
+                dayOfWeek: Intl.DateTimeFormat(this.locale, {weekday: 'long'}).format,
+                day: Intl.DateTimeFormat(this.locale, {day: 'numeric'}).format,
+                shortMonth: Intl.DateTimeFormat(this.locale, {month: 'short'}).format,
+                year: Intl.DateTimeFormat(this.locale, {year: 'numeric'}).format
+            };
+        },
+        _datetimeChanged: function() {
+            this._dayOfWeek = this._intl.dayOfWeek(this._datetime);
+            this._dayOfMonth = this._intl.day(this._datetime);
+            this._monthShortName = this._intl.shortMonth(this._datetime);
+            this._formattedYear = this._intl.year(this._datetime);
+
+            this._hours = this._pad(this._datetime.getHours(), 2);
+            this._minutes = this._pad(this._datetime.getMinutes(), 2);
+            this._year = this._datetime.getFullYear();
+        },
+        datetimeChanged: function(){
+            this._datetime = new Date(this.datetime.toISOString());
+        },
+        _pad:function(num, size) {
+            var s = num+"";
+            while (s.length < size) s = "0" + s;
+            return s;
+        },
+        setDate:function(){
+            this.datetime = new Date(this._datetime);
+            this.fire('date-changed', this.datetime);
+        },
+        onDateChange:function(e){
+            e.stopPropagation();
+        },
+
+    };
+
+    CG.CGBasePickerDialogBehavior = [CG.BaseBehavior, CGBasePickerDialogBehaviorImpl];
+</script>

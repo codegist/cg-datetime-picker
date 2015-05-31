@@ -1,24 +1,68 @@
 <link href="../polymer/polymer.html" rel="import">
 <link href="cg-base-value-picker.html" rel="import">
 
-<polymer-element name="cg-year-picker" extends="cg-base-value-picker" attributes="datetime">
-    <script>
-        Polymer('cg-year-picker', {
-            datetime: new Date(),
-            min:1900,
-            max:2100,
-            containerWidth:"calc(32% - 6px)",
-            itemWidth:"64px",
-            itemHeight:"64px",
-            _getDisplayName:function(value){
-                return value;
+<dom-module id="cg-year-picker">
+<style>
+    cg-base-value-picker ::content .value {
+        width: calc(32% - 6px);
+    }
+    cg-base-value-picker ::content .value div {
+        width: 64px;
+        height: 64px;
+    }
+</style>
+<template>
+    <cg-base-value-picker id="picker"
+                          datetime="{{datetime}}" height="{{height}}"
+                          min="1900" max="2100"
+                          display-name="{{displayName}}"
+                          current-value="{{currentValue}}"
+                          to-datetime="{{toDatetime}}"
+                          on-date-changed="_onChanged"></cg-base-value-picker>
+</template>
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-year-picker',
+        properties:{
+            height:Number,
+            datetime:{
+                type:Date,
+                notify:true,
             },
-            _getCurrentValue:function(date){
-                return date.getFullYear();
+            displayName:{
+                type:Function,
+                value:function(){
+                    return function(value){
+                        return value;
+                    };
+                },
+                readonly:true
             },
-            _toDatetime:function(selectedValue, currentDatetime){
-                return new Date(selectedValue, currentDatetime.getMonth(), currentDatetime.getDate(), currentDatetime.getHours(), currentDatetime.getMinutes(), currentDatetime.getSeconds());
-            }
-        });
-    </script>
-</polymer-element>
+            currentValue:{
+                type:Function,
+                value:function(){
+                    return function(date){
+                        return date.getFullYear();
+                    };
+                },
+                readonly:true
+            },
+            toDatetime:{
+                type:Function,
+                value:function(){
+                    return function(selectedValue, currentDatetime){
+                        return new Date(selectedValue, currentDatetime.getMonth(), currentDatetime.getDate(), currentDatetime.getHours(), currentDatetime.getMinutes(), currentDatetime.getSeconds());
+                    };
+                },
+                readonly:true
+            },
+        },
+        scrollToSelection:function(now){
+            this.$.picker.scrollToSelection(now);
+        },
+        _onChanged:function(e){
+            this.fire("date-changed", e.detail);
+        },
+    });
+</script>

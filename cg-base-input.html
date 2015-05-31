@@ -1,86 +1,108 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../cg-base/cg-base.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
-
 <script src="../momentjs/min/moment-with-locales.min.js"></script>
 
-<polymer-element name="cg-base-input" extends="cg-base" attributes="datetime dateFormat disabled required backdrop" horizontal layout>
+<dom-module id="cg-base-input">
+    <style>
+        :host {
+            @apply(--layout-horizontal);
+        }
+        #button {
+            padding:0px;
+        }
+        #input {
+            width:100%!important;
+        }
+        #button iron-icon {
+            width:18px;
+            height:18px;
+        }
+        input {
+            @apply(--layout-flex);
+        }
+    </style>
     <template>
-        <style>
-            #button {
-                padding:0px;
-            }
-            #input {
-                width:100%!important;
-            }
-            #button /deep/ core-icon {
-                width:18px!important;
-                height:18px!important;
-            }
-        </style>
-        <input tabindex="0" flex is="core-input" required?="{{required}}" value="{{datetime | format(self)}}" disabled?="{{disabled}}" on-tap="{{_openDialog}}" id="input"">
-        <paper-icon-button id="button" tabindex="0" icon="fa:calendar-o" on-tap="{{_openDialog}}" relative noink disabled="{{disabled}}">
-            <shadow></shadow>
-            <content></content>
-        </paper-icon-button>
+        <input tabindex="0" is="iron-input" required$="{{required}}" value$="{{formattedDate}}" disabled$="{{disabled}}" on-tap="_openDialog" id="input">
+        <paper-icon-button id="button" tabindex="0" icon="fa:calendar-o" on-tap="_openDialog" relative noink disabled$="{{disabled}}"></paper-icon-button>
     </template>
-    <script>
-        Polymer({
-            /**
-             * ISO Date string representation
-             *
-             * @attribute datetime
-             * @type Date
-             * @default null
-             */
-            datetime:null,
-            backdrop:true,
-            listensTo:[],
-            dateFormat:"DD/MM/YYYY",
-            disabled:false,
-            required:false,
-            _pickerDatetime:null,
-            _decoratorElement:null,
-            domReady:function(){
-                this.super();
-                if(this.parentElement.tagName.toLowerCase() == "paper-input-decorator") {
-                    this._decoratorElement = this.parentElement; // _decoratorElement thing's quite nasty..
-                    this._decoratorElement.input = this.$.input; // _decoratorElement thing's quite nasty..
-                }
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-base-input',
+        properties:{
+            listensTo:{
+                type:Array,
+                value:[]
             },
-            _openDialog: function() {
-                if(this.disabled) {
-                    return;
-                }
-                this.datetimeChanged();
-                this.$.picker.open(this._pickerDatetime, function(e){
-                    this.datetime = e.detail;
-                    this.fire("change", this.datetime);
-                }.bind(this), this.backdrop);
-                if(this._decoratorElement) {
-                    this.job("refocus", function(){this._decoratorElement.focused = true;}, 250);
-                }
+            disabled:{
+                type:Boolean,
+                value:false,
             },
-            format:{
-                toModel:function(value, scope){
-                    var date = moment(value, scope.dateFormat, true);
-                    if(!date.isValid()) {
-                        scope.$.input.setCustomValidity("Date is not valid");
-                        scope._decoratorElement &&  this.async(scope._decoratorElement.inputChanged.bind(scope._decoratorElement));
-                    }else{
-                        this.$.input.setCustomValidity(null);
-                    }
-                    return date;
-                },
-                toDOM:function(value, scope){
-                    return value ? moment(value.toISOString(), moment.ISO_8601).format(scope.dateFormat) : undefined;
-                },
+            required:{
+                type:Boolean,
+                value:false,
             },
-            datetimeChanged: function () {
-                this._pickerDatetime = this.datetime ? new Date(this.datetime) : null;
-                this._decoratorElement &&  this.async(this._decoratorElement.inputAction.bind(this._decoratorElement));
+            dateFormat:{
+                type:String,
+            },
+            datetime:{
+                type:Date,
+                notify:true,
+                observer:'datetimeChanged'
+            },
+            formattedDate:{
+                computed:"formatDate(datetime, dateFormat)"
+            },
+            backdrop:{
+                type:Boolean,
+                notify:true,
             }
-        });
-    </script>
-</polymer-element>
+        },
+        _pickerDatetime:null,
+//        _decoratorElement:null,
+        ready:function(){
+            console.log()
+//            if(this.parentElement.tagName.toLowerCase() == "paper-input-decorator") {
+//                this._decoratorElement = this.parentElement; // _decoratorElement thing's quite nasty..
+//                this._decoratorElement.input = this.$.input; // _decoratorElement thing's quite nasty..
+//            }
+        },
+        _openDialog: function() {
+            if(this.disabled) {
+                return;
+            }
+            //this.datetimeChanged();
+            this.$.picker.open(this._pickerDatetime, function(e){
+                this.datetime = e.detail;
+                this.fire("date-changed", this.datetime);
+            }.bind(this), this.backdrop);
+//            if(this._decoratorElement) {
+//                this.job("refocus", function(){this._decoratorElement.focused = true;}, 250);
+//            }
+        },
+        formatDate:function(date, format){
+            return date ? moment(date.toISOString(), moment.ISO_8601).format(format) : undefined;
+        },
+        format:{
+            toModel:function(value, scope){
+                var date = moment(value, scope.dateFormat, true);
+                if(!date.isValid()) {
+                    scope.$.input.setCustomValidity("Date is not valid");
+//                    scope._decoratorElement &&  this.async(scope._decoratorElement.inputChanged.bind(scope._decoratorElement));
+                }else{
+                    this.$.input.setCustomValidity(null);
+                }
+                return date;
+            },
+            toDOM:function(value, scope){
+                return value ? moment(value.toISOString(), moment.ISO_8601).format(scope.dateFormat) : undefined;
+            },
+        },
+        datetimeChanged: function () {
+            this._pickerDatetime = this.datetime ? new Date(this.datetime) : null;
+//            this._decoratorElement &&  this.async(this._decoratorElement.inputAction.bind(this._decoratorElement));
+        }
+    });
+</script>

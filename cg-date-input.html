@@ -1,15 +1,48 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cg-base/cg-base-behavior.html">
 <link rel="import" href="cg-base-input.html">
 <link rel="import" href="cg-date-picker-dialog.html">
 
-<polymer-element name="cg-date-input" extends="cg-base-input" attributes="datetime dateFormat disabled required backdrop" constructor="CGDateInput">
-    <script>
-        Polymer({
-            dateFormat:"DD/MM/YYYY",
-            domReady:function(){
-                this.super();
-                this.$.picker = this.globals.dateDialog || this.appendChild(document.createElement('cg-date-picker-dialog'));
+<dom-module id="cg-date-input">
+<template>
+    <cg-base-input id="input"
+                   disabled="{{disabled}}"
+                   required="{{required}}"
+                   dateFormat="{{dateFormat}}"
+                   datetime="{{datetime}}"
+                   backdrop="{{backdrop"
+                   on-change="onChange"></cg-base-input>
+</template>
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-date-input',
+        properties:{
+            disabled:{
+                type:Boolean
             },
-        });
-    </script>
-</polymer-element>
+            required:{
+                type:Boolean
+            },
+            dateFormat:{
+                type:String,
+                value:"DD/MM/YYYY"
+            },
+            datetime:{
+                type:Date,
+                notify:true
+            },
+            backdrop:{
+                type:Boolean,
+                notify:true,
+            }
+        },
+        behaviors:[CG.BaseBehavior],
+        ready:function(){
+            this.$.input.$.picker = this.globals.dateDialog || this.appendChild(document.createElement('cg-date-picker-dialog'));
+        },
+        onChange:function(e){
+            this.fire("change", e.detail);
+        }
+    });
+</script>

@@ -1,262 +1,269 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../core-collapse/core-collapse.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
 <link rel="import" href="cg-year-picker.html">
 <link rel="import" href="cg-month-picker.html">
 
-<polymer-element name="cg-date-picker" attributes="datetime locale startDayOfWeek">
+<dom-module id="cg-date-picker">
+    <style>
+        :host {
+            display: inline-block;
+            position: relative;
+            width: 300px;
+            font-family:sans-serif;
+        }
+        #container{
+            padding: 0px 9px;
+        }
+        .days{
+            @apply(--layout-horizontal);
+            @apply(--layout-flex);
+            @apply(--layout-wrap);
+            @apply(--layout-self-stretch);
+            width: 100%;
+        }
+
+        .day{
+            @apply(--layout);
+            @apply(--layout-center-justified);
+            @apply(--layout-center-center);
+            width: calc(14% - 6px);
+            text-align: center;
+            margin: 3px;
+            font-size: 13px;
+            color:rgba(0, 0, 0, 0.870588);
+        }
+
+        .day[data-date]{
+            cursor: pointer;
+        }
+
+        .day span{
+            display: block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .day.selected span{
+            background-color: #009688;
+            color: white;
+            border-radius: 100%;
+        }
+
+        .day.title{
+            padding-top: 0px;
+            padding-bottom: 4px;
+            font-weight: bold;
+            color: rgba(0,0,0,.6);
+            cursor: default;
+        }
+
+        .monthname{
+            text-align: center;
+            font-size: 1.2rem;
+            color: rgba(0,0,0,.73);
+        }
+        .previous-month ::content iron-icon,
+        .next-month ::content iron-icon {
+            color:#009688;
+        }
+        .day    ,
+        .previous-month,
+        .next-month {
+            outline:0;
+        }
+        .date-actions {
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+        }
+        .heading-month {
+            text-transform: none;
+        }
+    </style>
     <template>
-        <style>
-            :host {
-                display: inline-block;
-                position: relative;
-                height: 250px;
-                width: 300px;
-                font-family:sans-serif;
-            }
-
-            :host cg-month-picker,
-            :host cg-year-picker {
-                width:100%;
-                height:100%;
-            }
-
-            :host cg-month-picker /deep/ .months ,
-            :host cg-year-picker /deep/ .years {
-                height:200px;
-            }
-
-            :host #container{
-                height: 100%;
-                width: 100%;
-                padding: 0px 9px;
-                box-sizing: border-box;
-            }
-
-            :host .days{
-                display: flex;
-                flex-wrap: wrap;
-                width: 100%;
-                align-content: stretch;
-                min-height: 200px;
-            }
-
-            :host .day{
-                width: calc(14% - 6px);
-                text-align: center;
-                margin: 3px;
-                font-size: 13px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color:rgba(0, 0, 0, 0.870588);
-            }
-
-            :host .day[data-date]{
-                cursor: pointer;
-            }
-
-            :host .day span{
-                display: block;
-                width: 30px;
-                height: 30px;
-                line-height: 30px;
-            }
-
-            :host .day.selected span{
-                background-color: #009688;
-                color: white;
-                border-radius: 100%;
-            }
-
-            :host .day.title{
-                padding-top: 0px;
-                padding-bottom: 4px;
-                font-weight: bold;
-                color: rgba(0,0,0,.6);
-                cursor: default;
-            }
-
-            :host .monthname{
-                text-align: center;
-                font-size: 1.2rem;
-                color: rgba(0,0,0,.73);
-            }
-            :host .heading-month {
-                text-transform: none!important;
-            }
-            :host paper-button.hover:hover {
-                box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.1);
-            }
-            :host .previous-month /deep/ core-icon,
-            :host .next-month /deep/ core-icon {
-                color:rgb(0, 150, 136)!important;
-            }
-            :host .previous-month,
-            :host .next-month {
-                outline:0;
-            }
-        </style>
-        <div on-tap="{{_selectDate}}" id="container">
-            <section class="month" data-month="{{month.number}}" data-year="{{month.year}}">
-                <section layout horizontal center>
-                    <core-icon-button tabindex="0" icon="fa:caret-left" on-tap="{{_previousMonth}}" class="previous-month"></core-icon-button>
-                    <paper-button tabindex="0" flex id="monthBtn" on-tap="{{_monthsPicker}}" class="hover monthname"><span class="heading-month">{{month.name}}</span></paper-button>
-                    <paper-button tabindex="0" flex id="yearBtn" on-tap="{{_yearPicker}}" class="hover monthname"><span class="heading-year">{{month.year}}</span></paper-button>
-                    <core-icon-button tabindex="0" icon="fa:caret-right" on-tap="{{_nextMonth}}" class="next-month"></core-icon-button>
-                </section>
-                <section>
-                    <core-collapse id="monthsCollapse">
-                        <cg-month-picker id="monthPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-month-picker>
-                    </core-collapse>
-                    <core-collapse id="yearCollapse">
-                        <cg-year-picker id="yearPicker" datetime="{{_pickerDatetime}}" on-selection-changed="{{_selectionChanged}}"></cg-year-picker>
-                    </core-collapse>
-                    <core-collapse id="monthCollapse" opened>
+        <div on-tap="_selectDate" id="container">
+            <div class="month" data-month$="[[month.number]]" data-year$="[[month.year]]">
+                <div class="date-actions">
+                    <paper-icon-button tabindex="0" icon="fa:caret-left" on-tap="_previousMonth" class="previous-month"></paper-icon-button>
+                    <paper-button tabindex="0" flex id="monthBtn" on-tap="_monthsPicker" class="hover monthname"><span class="heading-month">[[month.name]]</span></paper-button>
+                    <paper-button tabindex="0" flex id="yearBtn" on-tap="_yearPicker" class="hover monthname"><span class="heading-year">[[month.year]]</span></paper-button>
+                    <paper-icon-button tabindex="0" icon="fa:caret-right" on-tap="_nextMonth" class="next-month"></paper-icon-button>
+                </div>
+                <div>
+                    <iron-collapse id="monthsCollapse">
+                        <cg-month-picker id="monthPicker"  datetime="{{_pickerDatetime}}" on-date-changed="_selectionChanged"></cg-month-picker>
+                    </iron-collapse>
+                    <iron-collapse id="yearCollapse">
+                        <cg-year-picker id="yearPicker"  datetime="{{_pickerDatetime}}" on-date-changed="_selectionChanged"></cg-year-picker>
+                    </iron-collapse>
+                    <iron-collapse id="monthCollapse" opened>
                         <div class="days" id="datePicker">
-                            <template repeat="{{name in _weekDayNames}}">
-                                <div class="day title">{{name}}</div>
+                            <template is="dom-repeat" items="[[_weekDayNames]]" as="name">
+                                <div class="day title">[[name]]</div>
                             </template>
-                            <template repeat="{{ day in month.days }}">
-                                <template if="{{!day}}">
-                                    <div class="day"></div>
-                                </template>
-                                <template if="{{day}}">
-                                    <div tabindex="0" class="day {{ { selected : day.n == _currentDay && month.number == _currentMonth && month.year == _currentYear } | tokenList }}" data-date="{{day.n}}" data-month="{{month.number}}" data-year="{{month.year}}">
-                                        <span>{{day.day}}</span>
-                                    </div>
-                                </template>
+                            <template is="dom-repeat" items="[[month.days]]" as="day">
+                                <div tabindex="0" class$="[[_computeDayClasses(day, month, _currentDay, _currentMonth, _currentYear)]]"
+                                     data-date$="[[day.n]]" data-month$="[[month.number]]" data-year$="[[month.year]]">
+                                    <span>[[day.day]]</span>
+                                </div>
                             </template>
                         </div>
-                    </core-collapse>
-                </section>
+                    </iron-collapse>
+                </div>
             </div>
         </div>
     </template>
-    <script>
-        Polymer('cg-date-picker', {
-            datetime: new Date(),
-            locale: undefined,
-            startDayOfWeek: 1,
-
-            _pickerDatetime :null,
-            _currentYear : 0,
-            _currentMonth : 0,
-            _currentDay : 0,
-            _months: [],
-            _weekDayNames: [],
-            _nonNumericDates: false,
-            _intl: {},
-            ready: function(){
-                this.localeChanged();
-                this.datetimeChanged();
-                this._renderMonth();
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-date-picker',
+        properties:{
+            datetime:{
+                type:Date,
+                observer:'datetimeChanged',
+                notify:true
             },
-            _selectionChanged:function(){
-                var dt = this._getDateTime();
-                this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), 1,
-                        dt.getHours(), dt.getMinutes(), dt.getSeconds());
-                this.fire("selection-changed", this.datetime);
+            startDayOfWeek: {
+                type:Number,
+                value:1
             },
-            _yearPicker:function(e){
-                this.$.yearPicker.ready();
-                if(this.$.yearCollapse.opened) {
-                    this.$.monthsCollapse.opened = false;
-                    this.$.yearCollapse.opened = false;
-                    this.$.monthCollapse.opened = true;
-                }else{
-                    this.$.monthsCollapse.opened = false;
-                    this.$.monthCollapse.opened = false;
-                    this.$.yearCollapse.opened = true;
-                }
+            locale: {
+                value:window.navigator.userLanguage || window.navigator.language,
+                observer:'localeChanged'
             },
-            _monthsPicker:function(e) {
-                this.$.monthPicker.ready();
-                if(this.$.monthsCollapse.opened) {
-                    this.$.yearCollapse.opened = false;
-                    this.$.monthsCollapse.opened = false;
-                    this.$.monthCollapse.opened = true;
-                }else{
-                    this.$.yearCollapse.opened = false;
-                    this.$.monthCollapse.opened = false;
-                    this.$.monthsCollapse.opened = true;
-                }
+            _pickerDatetime : {
+                type:Date,
+                value:new Date(),
+                observer:'_pickerDatetimeChanged'
             },
-            _renderMonth: function(){
-                var month = {
-                    days: [],
-                    name: "",
-                    number: this._pickerDatetime.getMonth(),
-                    year: this._pickerDatetime.getFullYear()
-                };
-                var date = new Date(month.year, month.number, 1);
-                var startPoint = (date.getDay() - this.startDayOfWeek + 7) % 7;
-                month.name = Intl.DateTimeFormat(this.locale, {month: 'long'}).format(date);
-                var date = new Date(month.year, month.number + 1, 0);
-                var endPoint = date.getDate();
-                month.days = new Array(startPoint);
-                for(var i = 1; i <= endPoint; i++){
-                    var thisDate = new Date(month.year, month.number, i);
-                    month.days.push({
-                        n:i,
-                        day: this._intl.day(thisDate)
-                    });
-                }
-                this.month = month;
-            },
-            _selectDate: function(e){
-                if(!e.path[1].dataset) {
-                    return;
-                }
-                var data = e.path[1].dataset.date ? e.path[1].dataset : e.path[0].dataset;
-                var day = data.date;
-                var month = data.month;
-                var year = data.year;
-                if(day && month && year){
-                    var dt = this._getDateTime();
-                    this.datetime = this._pickerDatetime = new Date(year, month, day, dt.getHours(), dt.getMinutes(), dt.getSeconds());
-                    this.fire("selection-changed", this.datetime);
-                }
-            },
-            _previousMonth:function(){
-                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() - 1, 1);
-            },
-            _nextMonth:function(){
-                this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() + 1, 1);
-            },
-            localeChanged: function(){
-                this._intl = {};
-                this._intl.day = Intl.DateTimeFormat(this.locale, {day: 'numeric' }).format;
-                var _weekDayNames = [];
-                for(var i = this.startDayOfWeek - 1; i < this.startDayOfWeek + 6; i++){
-                    var date = new Date(2000, 1, i, 0, 0, 0);
-                    _weekDayNames.push(new Intl.DateTimeFormat(this.locale, {weekday:'narrow'}).format(date));
-                }
-                this._weekDayNames = _weekDayNames;
-                var _months = [];
-                for(var i = 0; i < 12; i++){
-                    var date = new Date(2000, i, 1, 0, 0, 0);
-                    _months.push({
-                        name:new Intl.DateTimeFormat(this.locale, {month:'long'}).format(date),
-                        n:i
-                    });
-                }
-                this._months = _months;
-            },
-            datetimeChanged: function(){
-                this._pickerDatetime = this._getDateTime();
-            },
-            _getDateTime:function(){
-                return this.datetime || new Date();
-            },
-            _pickerDatetimeChanged: function(){
-                this._currentYear = this._pickerDatetime.getFullYear();
-                this._currentMonth = this._pickerDatetime.getMonth();
-                this._currentDay = this._pickerDatetime.getDate();
-                this._renderMonth();
+        },
+        _currentYear : 0,
+        _currentMonth : 0,
+        _currentDay : 0,
+        _months: [],
+        _weekDayNames: [],
+        _nonNumericDates: false,
+        _intl: {},
+        ready:function(){
+            this.async(this.setPickerHeight, 300);
+        },
+        setPickerHeight:function(){
+            this.$.monthPicker.height = this.$.monthCollapse.clientHeight;
+            this.$.yearPicker.height = this.$.monthCollapse.clientHeight;
+        },
+        _selectionChanged:function(){
+            var dt = this.datetime;
+            this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), 1,
+                    dt.getHours(), dt.getMinutes(), dt.getSeconds());
+            this.fire("date-changed", this.datetime);
+        },
+        _computeDayClasses:function(day, month, currentDay, currentMonth, currentYear){
+            var classes = "day";
+            if(day && day.n == currentDay && month.number == currentMonth && month.year == currentYear)  {
+                classes += " selected";
             }
-        });
-    </script>
-</polymer-element>
+            return classes;
+        },
+        _yearPicker:function(e){
+            this.$.yearPicker.scrollToSelection(true);
+            if(this.$.yearCollapse.opened) {
+                this.$.monthsCollapse.opened = false;
+                this.$.yearCollapse.opened = false;
+                this.$.monthCollapse.opened = true;
+            }else{
+                this.$.monthsCollapse.opened = false;
+                this.$.monthCollapse.opened = false;
+                this.$.yearCollapse.opened = true;
+            }
+        },
+        _monthsPicker:function(e) {
+            this.$.monthPicker.scrollToSelection(true);
+            if(this.$.monthsCollapse.opened) {
+                this.$.yearCollapse.opened = false;
+                this.$.monthsCollapse.opened = false;
+                this.$.monthCollapse.opened = true;
+            }else{
+                this.$.yearCollapse.opened = false;
+                this.$.monthCollapse.opened = false;
+                this.$.monthsCollapse.opened = true;
+            }
+        },
+        _renderMonth: function(){
+            var month = {
+                days: [],
+                name: "",
+                number: this._pickerDatetime.getMonth(),
+                year: this._pickerDatetime.getFullYear()
+            };
+            var date = new Date(month.year, month.number, 1);
+            var startPoint = (date.getDay() - this.startDayOfWeek + 7) % 7;
+            month.name = Intl.DateTimeFormat(this.locale, {month: 'long'}).format(date);
+            var date = new Date(month.year, month.number + 1, 0);
+            var endPoint = date.getDate();
+            month.days = new Array(startPoint);
+            for(var i = 0; i <= startPoint; i++){
+                month.days[i] = {};
+            }
+            for(var i = 1; i <= endPoint; i++){
+                var thisDate = new Date(month.year, month.number, i);
+                month.days.push({
+                    n:i,
+                    day: this._intl.day(thisDate)
+                });
+            }
+            this.month = month;
+        },
+        _selectDate: function(e){
+            if(!e.path[1].dataset) {
+                return;
+            }
+            var data = e.path[1].dataset.date ? e.path[1].dataset : e.path[0].dataset;
+            var day = data.date;
+            var month = data.month;
+            var year = data.year;
+            if(day && month && year){
+                var dt = this.datetime;
+                this.datetime = this._pickerDatetime = new Date(year, month, day, dt.getHours(), dt.getMinutes(), dt.getSeconds());
+                this.fire("date-changed", this.datetime);
+            }
+        },
+        _previousMonth:function(){
+            this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() - 1, 1);
+        },
+        _nextMonth:function(){
+            this._pickerDatetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth() + 1, 1);
+        },
+        localeChanged: function(){
+            this._intl = {};
+            this._intl.day = Intl.DateTimeFormat(this.locale, {day: 'numeric' }).format;
+            var _weekDayNames = [];
+            for(var i = this.startDayOfWeek - 1; i < this.startDayOfWeek + 6; i++){
+                var date = new Date(2000, 1, i, 0, 0, 0);
+                _weekDayNames.push(new Intl.DateTimeFormat(this.locale, {weekday:'narrow'}).format(date));
+            }
+            this._weekDayNames = _weekDayNames;
+            var _months = [];
+            for(var i = 0; i < 12; i++){
+                var date = new Date(2000, i, 1, 0, 0, 0);
+                _months.push({
+                    name:new Intl.DateTimeFormat(this.locale, {month:'long'}).format(date),
+                    n:i
+                });
+            }
+            this._months = _months;
+        },
+        datetimeChanged: function(){
+            this._pickerDatetime = this.datetime;
+        },
+        _pickerDatetimeChanged: function(){
+            this._currentYear = this._pickerDatetime.getFullYear();
+            this._currentMonth = this._pickerDatetime.getMonth();
+            this._currentDay = this._pickerDatetime.getDate();
+            this._renderMonth();
+        }
+    });
+</script>

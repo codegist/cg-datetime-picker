@@ -1,88 +1,97 @@
-<link href="../polymer/polymer.html" rel="import">
-<link href="../paper-dialog/paper-action-dialog.html" rel="import">
-<link href="../paper-button/paper-button.html" rel="import">
-<link href="cg-base-picker-dialog.html" rel="import">
-<link href="cg-date-picker.html" rel="import">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="cg-base-picker-dialog-behavior.html">
+<link rel="import" href="cg-date-picker.html">
 
-<style shim-shadowdom>
-    html /deep/ .cg-date-picker-dialog::shadow #scroller {
-        width: 624px;
-        overflow:hidden;
-        padding:0px;
-    }
-    html /deep/ .cg-date-picker-dialog  {
-        font-family:sans-serif;
-    }
+<dom-module id="cg-date-picker-dialog">
+    <style>
+        :host  {
+            font-family:sans-serif;
+        }
 
-    html /deep/ .cg-date-picker-dialog::shadow .day {
-        font-size:1rem;
-    }
+        .buttons {
+            padding: 0.7rem;
+            line-height: 1.0rem;
+        }
+        .buttons paper-button {
+            font-size: 1.2rem;
+            color: rgb(0, 150, 136);
+        }
+        .datepanel {
+            @apply(--layout-vertical);
+            background-color:#009688;
+            width:50%;
+            font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+        }
+        .datepanel h2,
+        .datepanel h1 {
+            margin:0px;
+            text-align: center;
+            font-weight: normal;
+        }
+        .datepanel .dayOfWeek,
+        .datepanel .monthName,
+        .datepanel .dayOfMonth {
+            color:#e1e1e1;
 
-    html /deep/ .cg-date-picker-dialog::shadow #actions {
-        padding: 0.7rem;
-        font-size: 1.2rem;
-        color: rgb(0, 150, 136);
-        line-height: 1.0rem;
-    }
-    html /deep/ .cg-date-picker-dialog .datepanel {
-        background-color:#009688;
-        width:50%;
-        font-family: 'Helvetica Neue', Helvetica, Arial, serif;
-    }
-    html /deep/ .cg-date-picker-dialog .datepanel h2,
-    html /deep/ .cg-date-picker-dialog .datepanel h1 {
-        margin:0px;
-        text-align: center;
-        font-weight: normal;
-    }
-    html /deep/ .cg-date-picker-dialog .datepanel .dayOfWeek,
-    html /deep/ .cg-date-picker-dialog .datepanel .monthName,
-    html /deep/ .cg-date-picker-dialog .datepanel .dayOfMonth {
-        color:#e1e1e1;
+        }
+        .datepanel .dayOfWeek {
+            background-color:#00796b;
+            line-height:2.5rem;
+            font-size:1.2rem;
+        }
 
-    }
-    html /deep/ .cg-date-picker-dialog .datepanel .dayOfWeek {
-        background-color:#00796b;
-        line-height:2.5rem;
-        font-size:1.2rem;
-    }
+        .datepanel .monthName {
+            padding-top:3.0rem;
+            font-size:1.5rem;
+            line-height:1.5rem;
+            color:#e1e1e1;
+            text-transform:uppercase;
+        }
 
-    html /deep/ .cg-date-picker-dialog .datepanel .monthName {
-        padding-top:2.0rem;
-        font-size:1.5rem;
-        line-height:1.5rem;
-        color:#e1e1e1;
-        text-transform:uppercase;
-    }
+        .datepanel .dayOfMonth {
+            font-size:6.1rem;
+            line-height:6.1rem;
+        }
 
-    html /deep/ .cg-date-picker-dialog .datepanel .dayOfMonth {
-        font-size:6.1rem;
-        line-height:6.1rem;
-    }
-
-    html /deep/ .cg-date-picker-dialog .datepanel .year {
-        color:rgba(255,255,255,0.5);
-        font-size:1.5rem;
-        line-height:1.5rem;
-    }
-</style>
-<polymer-element name="cg-date-picker-dialog" extends="cg-base-picker-dialog" attributes="datetime">
+        .datepanel .year {
+            color:rgba(255,255,255,0.5);
+            font-size:1.5rem;
+            line-height:1.5rem;
+        }
+        #container {
+            @apply(--layout-horizontal);
+            padding:0px;
+            margin:0px;
+            width: 624px;
+        }
+        cg-date-picker {
+            @apply(--layout-flex);
+        }
+    </style>
     <template>
-        <paper-action-dialog id="dialog" class="cg-date-picker-dialog" layered="true">
-            <section layout horizontal id="container">
-                <div layout vertical class="datepanel">
-                    <h1 class="dayOfWeek">{{ _dayOfWeek }}</h1>
-                    <h2 class="monthName">{{ _monthShortName }}</h2>
-                    <h1 class="dayOfMonth">{{ _dayOfMonth }}</h1>
-                    <h2 class="year">{{ _formattedYear }}</h2>
+        <paper-dialog id="dialog" modal>
+            <div id="container">
+                <div class="datepanel">
+                    <h1 class="dayOfWeek">[[_dayOfWeek]]</h1>
+                    <h2 class="monthName">[[_monthShortName]]</h2>
+                    <h1 class="dayOfMonth">[[_dayOfMonth]]</h1>
+                    <h2 class="year">[[_formattedYear]]</h2>
                 </div>
-                <cg-date-picker flex datetime="{{_datetime}}" id="datetimePicker"></cg-date-picker>
-            </section>
-            <paper-button affirmative tabindex="0">Cancel</paper-button>
-            <paper-button affirmative on-tap={{setDate}} tabindex="0">OK</paper-button>
-        </paper-action-dialog>
+                <cg-date-picker datetime="{{_datetime}}" id="datetimePicker" on-date-changed="onDateChange"></cg-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss tabindex="0">Cancel</paper-button>
+                <paper-button dialog-confirm on-tap="setDate" tabindex="0">OK</paper-button>
+            </div>
+        </paper-dialog>
     </template>
-    <script>
-        Polymer('cg-date-picker-dialog', {});
-    </script>
-</polymer-element>
+</dom-module>
+<script>
+    Polymer({
+        is:'cg-date-picker-dialog',
+        behaviors:[CG.CGBasePickerDialogBehavior]
+    });
+</script>

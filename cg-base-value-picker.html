@@ -1,155 +1,169 @@
 <link href="../polymer/polymer.html" rel="import">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
-<polymer-element name="cg-base-value-picker" attributes="datetime min max itemWidth containerWidth">
+<dom-module id="cg-base-value-picker">
+    <style>
+        :host {
+            display: inline-block;
+            position: relative;
+            width: 300px;
+            font-family:sans-serif;
+        }
+
+        #container{
+            height: 100%;
+            width: 100%;
+            padding: 0px 9px;
+            box-sizing: border-box;
+        }
+
+        .values {
+            overflow:auto;
+            @apply(--layout-horizontal);
+            @apply(--layout-flex);
+            @apply(--layout-wrap);
+            @apply(--layout-self-stretch);
+        }
+
+        .value {
+            @apply(--layout-center-justified);
+            @apply(--layout-center-center);
+            text-align: center;
+            margin: 3px;
+            font-size: 1.2rem;
+            color:rgba(0, 0, 0, 0.870588);
+            display: block;
+            line-height: 64px;
+        }
+
+        .value.selected div {
+            background-color: #009688;
+            border-radius: 100%;
+            color: white;
+        }
+
+        .value[data-value]{
+            cursor: pointer;
+        }
+
+        .value div {
+            outline:0;
+        }
+    </style>
     <template>
-        <style>
-            :host {
-                display: inline-block;
-                position: relative;
-                height: 250px;
-                width: 300px;
-                font-family:sans-serif;
-            }
-
-            :host #container{
-                height: 100%;
-                width: 100%;
-                padding: 0px 9px;
-                box-sizing: border-box;
-            }
-
-            :host .values {
-                overflow:auto;
-                display: flex;
-                flex-wrap: wrap;
-                width: 100%;
-                align-content: stretch;
-                height: 210px;
-            }
-
-            :host .value {
-                width: {{containerWidth}};
-                text-align: center;
-                margin: 3px;
-                font-size: 1.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color:rgba(0, 0, 0, 0.870588);
-                display: block;
-                line-height: 64px;
-
-            }
-            :host .value div {
-                width: {{itemWidth}};
-                height: {{itemHeight}};
-            }
-
-            :host .value[data-value]{
-                cursor: pointer;
-            }
-
-            :host .value.selected div {
-                background-color: #009688;
-                border-radius: 100%;
-                color: white;
-            }
-
-            :host .value div {
-                outline:0;
-            }
-        </style>
-        <div on-tap="{{_selectvalue}}" id="container">
-            <div data="{{value}}">
-                <div class="values" id="scroller">
-                    <template repeat="{{ value in _values }}">
-                        <template if="{{value}}">
-                            <div class="value {{ { selected : value.n == _currentvalue} | tokenList }}" data-value="{{value.n}}">
-                                <div tabindex="0">{{value.name}}</div>
-                            </div>
-                        </template>
-                    </template>
-                </div>
+        <div on-tap="_selectvalue" id="container">
+            <div class="values" id="scroller" style$="[[_computeScrollerStyle(height)]]">
+                <template is="dom-repeat" items="{{_values}}">
+                    <div class$="[[_computeContentClass(item, _currentvalue)]]" data-value$="[[item.n]]">
+                        <div tabindex="0">[[item.name]]</div>
+                    </div>
+                </template>
             </div>
         </div>
     </template>
-    <script>
-        Polymer('cg-base-value-picker', {
-            datetime: new Date(),
-            min:null,
-            max:null,
-
-            _values:null,
-            _currentvalue : 0,
-            created:function(){
-                this._values = [];
+</dom-module>
+<script>
+    Polymer({
+        is: 'cg-base-value-picker',
+        properties:{
+            min:Number,
+            max:Number,
+            height:{
+                type:Number,
+                value:200
             },
-            _getDisplayName:function(i){
-                throw "to override";
-            },
-            _getCurrentValue:function(date){
-                throw "to override";
-            },
-            _toDatetime:function(selectedValue, currentDatetime){
-                throw "to override";
-            },
-            ready: function(){
-                var _values = [];
-                for(var i = this.min; i <= this.max; i++){
-                    _values.push({
-                        name:this._getDisplayName(i),
-                        n:i
-                    });
-                }
-                this._values = _values;
-            },
-            domReady:function(){
-                this.scrollToSelection();
-            },
-            datetimeChanged: function(){
-                this._currentvalue = this._getCurrentValue(this._getDateTime());
-                this.scrollToSelection();
-            },
-            scrollToSelection:function(){
-                this.async(this._scrollToSelection,null,1000);
-            },
-            _scrollToSelection:function(times){
-                var selected = this.$.container.querySelector("div.value[data-value='" + this._currentvalue + "']");
-                if(selected) {
-                    var scrollTop = this.$.scroller.scrollTop;
-                    var scrollBottom = scrollTop + this.$.scroller.clientHeight;
-                    var selectedTop = selected.offsetTop;
-                    var selectedBottom = selectedTop + selected.clientHeight;
-
-                    // to cater for when dom sizing is not ready due to animation or other
-                    if((scrollTop + scrollBottom + selectedTop + selectedBottom) == 0 && (!times || times > 1)) {
-                        return this.async(function(){
-                            var t = typeof times === "number" ? --times : 10;
-                            this._scrollToSelection(t);
-                        }.bind(this), null, 30);
+            displayName:{
+                type:Function,
+                value:function(){
+                    return function(value){
+                        return value;
                     }
-
-                    // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
-                    if(
-                        (scrollTop > selectedTop && selectedBottom < scrollBottom)
-                    ||  (scrollBottom < selectedBottom && selectedTop > scrollTop)
-                    ||  (scrollTop > selectedTop && selectedBottom > scrollBottom)) {
-                        this.$.scroller.scrollTop = selected.offsetTop - this.$.scroller.clientHeight/2 + selected.clientHeight/2;
+                },
+            },
+            currentValue:{
+                type:Function,
+                value:function(){
+                    return function(date){
+                        return date;
                     }
-                }
+                },
             },
-            _selectvalue: function(e){
-                var data = e.path[1].dataset.value ? e.path[1].dataset : e.path[0].dataset;
-                var value = data.value;
-                if(value){
-                    var dt = this._getDateTime();
-                    this.datetime = this._toDatetime(value, dt);
-                    this.fire("selection-changed", this.datetime);
-                }
+            toDatetime:{
+                type:Function,
+                value:function(){
+                    return function(selectedValue, currentDatetime){
+                        return null;
+                    }
+                },
             },
-            _getDateTime:function(){
-                return this.datetime || new Date();
+            datetime: {
+                value:new Date(),
+                type:Date,
+                notify:true,
+                observer:'datetimeChanged'
+            },
+        },
+        _values:null,
+        _currentvalue:null,
+        ready: function(){
+            var _values = [];
+            for(var i = this.min; i <= this.max; i++){
+                _values.push({
+                    name:this.displayName(i),
+                    n:i
+                });
             }
-        });
-    </script>
-</polymer-element>
+            this._values = _values;
+        },
+        datetimeChanged: function(){
+            this._currentvalue = this.currentValue(this.datetime);
+            this.scrollToSelection();
+        },
+        _computeScrollerStyle: function(height) {
+            return "height:" + parseInt(height || this.properties.height.value) + "px";
+        },
+        _computeContentClass: function(item, currentvalue) {
+            var className = 'value';
+            if (item.n == currentvalue) {
+                className += ' selected';
+            }
+            return className;
+        },
+        scrollToSelection:function(now){
+            this.async(this._scrollToSelection,now === true ? undefined : 1000);
+        },
+        _scrollToSelection:function(times){
+            var selected = this.$.container.querySelector("div.value[data-value='" + this._currentvalue + "']");
+            if(selected) {
+                var scrollTop = this.$.scroller.scrollTop;
+                var scrollBottom = scrollTop + this.$.scroller.clientHeight;
+                var selectedTop = selected.offsetTop;
+                var selectedBottom = selectedTop + selected.clientHeight;
+
+                // to cater for when dom sizing is not ready due to animation or other
+                if((scrollTop + scrollBottom + selectedTop + selectedBottom) == 0 && (!times || times > 1)) {
+                    return this.async(function(){
+                        var t = typeof times === "number" ? --times : 10;
+                        this._scrollToSelection(t);
+                    }.bind(this), null, 30);
+                }
+
+                // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
+                if(
+                        (scrollTop > selectedTop && selectedBottom < scrollBottom)
+                        ||  (scrollBottom < selectedBottom && selectedTop > scrollTop)
+                        ||  (scrollTop > selectedTop && selectedBottom > scrollBottom)) {
+                    this.$.scroller.scrollTop = selected.offsetTop - this.$.scroller.clientHeight/2 + selected.clientHeight/2;
+                }
+            }
+        },
+        _selectvalue: function(e){
+            var data = e.path[1].dataset.value ? e.path[1].dataset : e.path[0].dataset;
+            var value = data.value;
+            if(value){
+                this.datetime = this.toDatetime(value, this.datetime);
+                this.fire("date-changed", this.datetime);
+            }
+        },
+    });
+</script>
