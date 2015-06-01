@@ -14,6 +14,7 @@
         .buttons {
             background-color: #009688;
             padding: 0.7rem;
+            line-height: 1.0rem;
         }
         .buttons paper-button {
             font-size: 1.2rem;
@@ -26,6 +27,7 @@
             font-size:1.2rem;
         }
         #container {
+            background-color: white;
             @apply(--layout-vertical);
             padding:0px;
             margin:0px;
@@ -61,6 +63,6 @@
 <script>
     Polymer({
         is:'cg-datetime-picker-dialog',
-        behaviors:[CG.CGBasePickerDialogBehavior]
+        behaviors:[CG.BasePickerDialogBehavior]
     });
 </script>

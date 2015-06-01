@@ -13,11 +13,11 @@
 </style>
 <template>
     <cg-base-value-picker id="picker"
-                          datetime="{{datetime}}" height="{{height}}"
+                          datetime="{{datetime}}" height="[[height]]"
                           min="1900" max="2100"
-                          display-name="{{displayName}}"
-                          current-value="{{currentValue}}"
-                          to-datetime="{{toDatetime}}"
+                          display-name="[[displayName]]"
+                          current-value="[[currentValue]]"
+                          to-datetime="[[toDatetime]]"
                           on-date-changed="_onChanged"></cg-base-value-picker>
 </template>
 </dom-module>
@@ -32,34 +32,31 @@
             },
             displayName:{
                 type:Function,
-                value:function(){
-                    return function(value){
-                        return value;
-                    };
-                },
+                value:function(){return this._displayName;},
                 readonly:true
             },
             currentValue:{
                 type:Function,
-                value:function(){
-                    return function(date){
-                        return date.getFullYear();
-                    };
-                },
+                value:function(){return this._currentValue;},
                 readonly:true
             },
             toDatetime:{
                 type:Function,
-                value:function(){
-                    return function(selectedValue, currentDatetime){
-                        return new Date(selectedValue, currentDatetime.getMonth(), currentDatetime.getDate(), currentDatetime.getHours(), currentDatetime.getMinutes(), currentDatetime.getSeconds());
-                    };
-                },
+                value:function(){return this._toDateTime;},
                 readonly:true
             },
         },
         scrollToSelection:function(now){
             this.$.picker.scrollToSelection(now);
+        },
+        _displayName:function(value){
+            return value;
+        },
+        _currentValue:function(date){
+            return date.getFullYear();
+        },
+        _toDateTime:function(selectedValue, currentDatetime){
+            return new Date(selectedValue, currentDatetime.getMonth(), currentDatetime.getDate(), currentDatetime.getHours(), currentDatetime.getMinutes(), currentDatetime.getSeconds());
         },
         _onChanged:function(e){
             this.fire("date-changed", e.detail);

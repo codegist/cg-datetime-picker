@@ -17,7 +17,7 @@
             box-sizing: border-box;
         }
 
-        .values {
+        #container .values {
             overflow:auto;
             @apply(--layout-horizontal);
             @apply(--layout-flex);
@@ -25,7 +25,7 @@
             @apply(--layout-self-stretch);
         }
 
-        .value {
+        #container .value {
             @apply(--layout-center-justified);
             @apply(--layout-center-center);
             text-align: center;
@@ -36,17 +36,17 @@
             line-height: 64px;
         }
 
-        .value.selected div {
+        #container .value.selected div {
             background-color: #009688;
             border-radius: 100%;
             color: white;
         }
 
-        .value[data-value]{
+        #container .value[data-value]{
             cursor: pointer;
         }
 
-        .value div {
+        #container .value div {
             outline:0;
         }
     </style>

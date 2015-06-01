@@ -5,17 +5,17 @@
 
 <dom-module id="cg-time-picker">
     <style>
-        .picker-arrow {
+        .wrapper .picker-arrow {
             padding:0px;
             outline:0;
         }
-        paper-icon-button ::content iron-icon {
+        .wrapper paper-icon-button ::content iron-icon {
             height:64px;
             width:64px;
             color:#009688;
         }
-        .picker,
-        .divider {
+        .wrapper input.picker,
+        .wrapper .divider {
             border: none;
             text-align: right;
             font-size: 6.1rem;
@@ -23,7 +23,7 @@
             width: 8.4rem;
             color: #2A2A2A;
         }
-        .divider {
+        .wrapper .divider {
             @apply(--layout-horizontal);
             @apply(--layout-center);
             width: 1.5rem;

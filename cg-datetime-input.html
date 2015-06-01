@@ -1,15 +1,16 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../cg-base/cg-base-behavior.html">
 <link rel="import" href="cg-base-input.html">
 
 <dom-module id="cg-datetime-input">
     <template>
+        <cg-date-input-validator required="[[required]]"></cg-date-input-validator>
         <cg-base-input id="input"
-                       disabled="{{disabled}}"
-                       required="{{required}}"
-                       date-format="{{dateFormat}}"
+                       disabled="[[disabled]]"
+                       date-format="[[dateFormat]]"
                        datetime="{{datetime}}"
-                       backdrop="{{backdrop"
+                       backdrop="[[backdrop]]"
                        on-change="onChange"></cg-base-input>
     </template>
 </dom-module>
@@ -17,15 +18,16 @@
     Polymer({
         is:'cg-datetime-input',
         properties:{
-            disabled:{
-                type:Boolean
-            },
-            required:{
-                type:Boolean
+            disabled:Boolean,
+            required:Boolean,
+            locale: {
+                value:window.navigator.userLanguage || window.navigator.language,
             },
             dateFormat:{
-                type:String,
-                value:"DD/MM/YYYY HH:mm"
+                type:Function,
+                value:function(){
+                    return Intl.DateTimeFormat(this.locale, {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:false})
+                }
             },
             datetime:{
                 type:Date,
@@ -34,9 +36,13 @@
             backdrop:{
                 type:Boolean,
                 notify:true,
+            },
+            validator: {
+                type: String,
+                value: 'cg-date-input-validator'
             }
         },
-        behaviors:[CG.BaseBehavior],
+        behaviors:[CG.BaseBehavior, Polymer.IronValidatableBehavior],
         ready:function(){
             this.$.input.$.picker = this.globals.datetimeDialog || this.importHref("cg-datetime-picker-dialog.html", function(){
                         this.$.input.$.picker = this.appendChild(document.createElement('cg-datetime-picker-dialog'));

@@ -2,31 +2,33 @@
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
-<script src="../momentjs/min/moment-with-locales.min.js"></script>
+<link rel="import" href="cg-date-input-validator.html">
 
 <dom-module id="cg-base-input">
     <style>
-        :host {
-            @apply(--layout-horizontal);
-        }
-        #button {
+        .wrapper #button {
             padding:0px;
         }
-        #input {
+        .wrapper #input {
             width:100%;
             margin-right:5px;
         }
-        #button ::content iron-icon {
+        .wrapper #button ::content iron-icon {
             width:18px;
             height:18px;
         }
-        input {
+        .wrapper {
+            @apply(--layout-horizontal);
+        }
+        .wrapper input {
             @apply(--layout-flex);
         }
     </style>
     <template>
-        <input tabindex="0" is="iron-input" required$="{{required}}" readonly value$="{{formattedDate}}" disabled$="{{disabled}}" on-focus="_openDialog" on-tap="_openDialog" id="input">
-        <paper-icon-button id="button" tabindex="0" icon="fa:calendar-o" on-tap="_openDialog" relative noink disabled$="{{disabled}}"></paper-icon-button>
+        <div class="wrapper">
+            <input tabindex="0" is="iron-input" readonly value$="[[formattedDate]]" disabled$="[[disabled]]" on-focus="_openDialog" on-tap="_openDialog" id="input">
+            <paper-icon-button id="button" tabindex="0" icon="fa:calendar-o" on-tap="_openDialog" relative noink disabled$="[[disabled]]"></paper-icon-button>
+        </div>
     </template>
 </dom-module>
 <script>
@@ -41,12 +43,11 @@
                 type:Boolean,
                 value:false,
             },
-            required:{
-                type:Boolean,
-                value:false,
+            locale: {
+                value:null,
             },
             dateFormat:{
-                type:String,
+                type:Object,
                 value:null,
             },
             datetime:{
@@ -62,7 +63,7 @@
             formattedDate:{
                 type: String,
                 computed:'formatDate(datetime, dateFormat)'
-            },
+            }
         },
         _pickerDatetime:null,
         _openDialog: function() {
@@ -75,7 +76,7 @@
             }.bind(this), this.backdrop);
         },
         formatDate:function(date, format){
-            return date ? moment(date.toISOString(), moment.ISO_8601).format(format) : undefined;
+            return date ? this.dateFormat.format(date) : undefined;
         },
         datetimeChanged: function () {
             this._pickerDatetime = this.datetime ? new Date(this.datetime) : null;

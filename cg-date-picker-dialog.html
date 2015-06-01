@@ -12,6 +12,7 @@
         }
 
         .buttons {
+            background-color: white;
             padding: 0.7rem;
             line-height: 1.0rem;
         }
@@ -63,6 +64,7 @@
         }
         #container {
             @apply(--layout-horizontal);
+            background-color: white;
             padding:0px;
             margin:0px;
             width: 624px;
@@ -92,6 +94,6 @@
 <script>
     Polymer({
         is:'cg-date-picker-dialog',
-        behaviors:[CG.CGBasePickerDialogBehavior]
+        behaviors:[CG.BasePickerDialogBehavior]
     });
 </script>
