@@ -33,7 +33,7 @@
         open: function(datetime, closeCallback, backdrop) {
 //            this.$.dialog.backdrop = backdrop != undefined ? backdrop : true;
             this.datetime = datetime || this.datetime;
-            this.$.datetimePicker.ready();
+            this.$.datetimePicker.prepare();
             this.$.dialog.open();
             closeCallback && this.listenOnce('date-changed', closeCallback);
         },

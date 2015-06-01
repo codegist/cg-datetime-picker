@@ -148,12 +148,8 @@
         _weekDayNames: [],
         _nonNumericDates: false,
         _intl: {},
-        ready:function(){
-            this.async(this.setPickerHeight, 300);
-        },
-        setPickerHeight:function(){
-            this.$.monthPicker.height = this.$.monthCollapse.clientHeight;
-            this.$.yearPicker.height = this.$.monthCollapse.clientHeight;
+        prepare:function(){
+            this.setPickerHeight();
         },
         _selectionChanged:function(){
             var dt = this.datetime;
@@ -216,6 +212,7 @@
                 });
             }
             this.month = month;
+            this.setPickerHeight();
         },
         _selectDate: function(e){
             if(!e.path[1].dataset) {
@@ -264,6 +261,13 @@
             this._currentMonth = this._pickerDatetime.getMonth();
             this._currentDay = this._pickerDatetime.getDate();
             this._renderMonth();
-        }
+        },
+        setPickerHeight:function(){
+            this.async(this._setPickerHeight, 50);
+        },
+        _setPickerHeight:function(){
+            this.$.monthPicker.height = this.$.monthCollapse.clientHeight;
+            this.$.yearPicker.height = this.$.monthCollapse.clientHeight;
+        },
     });
 </script>

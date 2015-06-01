@@ -15,7 +15,7 @@
     </style>
     <template>
         <div class="wrapper">
-            <cg-date-picker datetime="{{_pickerDate}}" on-date-changed="_selectionChanged"></cg-date-picker>
+            <cg-date-picker id="datepicker" datetime="{{_pickerDate}}" on-date-changed="_selectionChanged"></cg-date-picker>
             <div class="divider"></div>
             <cg-time-picker datetime="{{_pickerDate}}" adjust-time="{{adjustTime}}" on-date-changed="_selectionChanged"></cg-time-picker>
         </div>
@@ -36,6 +36,9 @@
             }
         },
         _pickerDate:null,
+        prepare:function(){
+            this.$.datepicker.prepare();
+        },
         _selectionChanged:function(){
             this.datetime = this.datetime != null ? new Date(this._pickerDate.toISOString()) : this._pickerDate;
             this.fire("date-changed", this.datetime);
