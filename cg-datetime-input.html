@@ -45,7 +45,7 @@
         behaviors:[CG.BaseBehavior, Polymer.IronValidatableBehavior],
         ready:function(){
             this.$.input.$.picker = this.globals.datetimeDialog || this.importHref("cg-datetime-picker-dialog.html", function(){
-                        this.$.input.$.picker = this.appendChild(document.createElement('cg-datetime-picker-dialog'));
+                        this.$.input.$.picker = Polymer.dom(this.root).appendChild(document.createElement('cg-datetime-picker-dialog'));
                     });
         },
         onChange:function(e){

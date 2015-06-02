@@ -24,10 +24,8 @@
                 value:window.navigator.userLanguage || window.navigator.language,
             },
             dateFormat:{
-                type:Function,
-                value:function(){
-                    return Intl.DateTimeFormat(this.locale, {day:'2-digit', month:'2-digit', year:'numeric'})
-                }
+                type:Intl.DateTimeFormat,
+                value:Intl.DateTimeFormat(this.locale, {day:'2-digit', month:'2-digit', year:'numeric'})
             },
             datetime:{
                 type:Date,
@@ -45,7 +43,7 @@
         behaviors:[CG.BaseBehavior, Polymer.IronValidatableBehavior],
         ready:function(){
             this.$.input.$.picker = this.globals.dateDialog || this.importHref("cg-date-picker-dialog.html", function(){
-                this.$.input.$.picker = this.appendChild(document.createElement('cg-date-picker-dialog'));
+                this.$.input.$.picker = Polymer.dom(this.root).appendChild(document.createElement('cg-date-picker-dialog'));
             });
         },
         onChange:function(e){

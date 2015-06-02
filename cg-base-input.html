@@ -35,6 +35,7 @@
     Polymer({
         is:'cg-base-input',
         properties:{
+            dateFormat:Intl.DateTimeFormat,
             listensTo:{
                 type:Array,
                 value:[]
@@ -43,17 +44,9 @@
                 type:Boolean,
                 value:false,
             },
-            locale: {
-                value:null,
-            },
-            dateFormat:{
-                type:Object,
-                value:null,
-            },
             datetime:{
                 type:Date,
                 notify:true,
-                value:null,
                 observer:'datetimeChanged'
             },
             backdrop:{

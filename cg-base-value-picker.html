@@ -1,4 +1,5 @@
-<link href="../polymer/polymer.html" rel="import">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="cg-base-value-picker">
@@ -7,7 +8,6 @@
             display: inline-block;
             position: relative;
             width: 300px;
-            font-family:sans-serif;
         }
 
         #container{
@@ -28,14 +28,14 @@
         #container .value {
             @apply(--layout-center-justified);
             @apply(--layout-center-center);
-            text-align: center;
-            margin: 3px;
-            font-size: 1.2rem;
+            @apply(--paper-font-headline);
+            font-size:1.2rem!important;
             color:rgba(0, 0, 0, 0.870588);
             display: block;
-            line-height: 64px;
+            text-align: center;
+            margin: 3px;
+            line-height: 64px!important;
         }
-
         #container .value.selected div {
             background-color: #009688;
             border-radius: 100%;
@@ -72,32 +72,10 @@
                 type:Number,
                 value:200
             },
-            displayName:{
-                type:Function,
-                value:function(){
-                    return function(value){
-                        return value;
-                    }
-                },
-            },
-            currentValue:{
-                type:Function,
-                value:function(){
-                    return function(date){
-                        return date;
-                    }
-                },
-            },
-            toDatetime:{
-                type:Function,
-                value:function(){
-                    return function(selectedValue, currentDatetime){
-                        return null;
-                    }
-                },
-            },
+            displayName:Function,
+            currentValue:Function,
+            toDatetime:Function,
             datetime: {
-                value:new Date(),
                 type:Date,
                 notify:true,
                 observer:'datetimeChanged'

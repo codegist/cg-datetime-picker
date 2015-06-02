@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-button/paper-button.html">
@@ -7,10 +8,6 @@
 
 <dom-module id="cg-date-picker-dialog">
     <style>
-        :host  {
-            font-family:sans-serif;
-        }
-
         .buttons {
             background-color: white;
             padding: 0.7rem;
@@ -24,10 +21,8 @@
             @apply(--layout-vertical);
             background-color:#009688;
             width:50%;
-            font-family: 'Helvetica Neue', Helvetica, Arial, serif;
         }
-        .datepanel h2,
-        .datepanel h1 {
+        .datepanel span {
             margin:0px;
             text-align: center;
             font-weight: normal;
@@ -39,28 +34,24 @@
 
         }
         .datepanel .dayOfWeek {
+            @apply(--paper-font-headline);
             background-color:#00796b;
-            line-height:2.5rem;
-            font-size:1.2rem;
         }
 
         .datepanel .monthName {
-            padding-top:3.0rem;
-            font-size:1.5rem;
-            line-height:1.5rem;
+            @apply(--paper-font-headline);
+            padding-top:2.0rem;
             color:#e1e1e1;
-            text-transform:uppercase;
+            text-transform: uppercase;
         }
 
         .datepanel .dayOfMonth {
-            font-size:6.1rem;
-            line-height:6.1rem;
+            @apply(--paper-font-display4);
         }
 
         .datepanel .year {
+            @apply(--paper-font-headline);
             color:rgba(255,255,255,0.5);
-            font-size:1.5rem;
-            line-height:1.5rem;
         }
         #container {
             @apply(--layout-horizontal);
@@ -77,10 +68,10 @@
         <paper-dialog id="dialog" modal>
             <div id="container">
                 <div class="datepanel">
-                    <h1 class="dayOfWeek">[[_dayOfWeek]]</h1>
-                    <h2 class="monthName">[[_monthShortName]]</h2>
-                    <h1 class="dayOfMonth">[[_dayOfMonth]]</h1>
-                    <h2 class="year">[[_formattedYear]]</h2>
+                    <span class="dayOfWeek">[[_dayOfWeek]]</span>
+                    <span class="monthName">[[_monthShortName]]</span>
+                    <span class="dayOfMonth">[[_dayOfMonth]]</span>
+                    <span class="year">[[_formattedYear]]</span>
                 </div>
                 <cg-date-picker datetime="{{_datetime}}" id="datetimePicker" on-date-changed="onDateChange"></cg-date-picker>
             </div>
