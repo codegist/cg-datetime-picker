@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../cg-base/cg-base-behavior.html">
+<link rel="import" href="../cg-base/cg-validatable-behavior.html">
 <link rel="import" href="cg-base-input.html">
 
 <dom-module id="cg-datetime-input">
@@ -42,7 +42,7 @@
                 value: 'cg-date-input-validator'
             }
         },
-        behaviors:[CG.BaseBehavior, Polymer.IronValidatableBehavior],
+        behaviors:[CG.BaseBehavior, CG.ValidatableBehavior],
         ready:function(){
             this.$.input.$.picker = this.globals.datetimeDialog || this.importHref("cg-datetime-picker-dialog.html", function(){
                         this.$.input.$.picker = Polymer.dom(this.root).appendChild(document.createElement('cg-datetime-picker-dialog'));
