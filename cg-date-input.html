@@ -47,7 +47,7 @@
             this.$.input.$.picker = this.globals.dateDialog || Polymer.dom(this.$.input.root).appendChild(document.createElement('cg-date-picker-dialog'));
         },
         onChange:function(e){
-            this.fire("change", e.detail);
+            this.fire("input", e.detail);
         }
     });
 </script>
