@@ -8,60 +8,63 @@
 
 <dom-module id="cg-date-picker-dialog">
     <style>
-        .buttons {
+        #dialog .buttons {
             background-color: white;
             padding: 0.7rem;
             line-height: 1.0rem;
         }
-        .buttons paper-button {
+        #dialog .buttons paper-button {
             font-size: 1.2rem;
             color: rgb(0, 150, 136);
         }
-        .datepanel {
+        #dialog .datepanel {
             @apply(--layout-vertical);
             background-color:#009688;
             width:50%;
         }
-        .datepanel span {
+        #dialog .datepanel span {
             margin:0px;
             text-align: center;
             font-weight: normal;
         }
-        .datepanel .dayOfWeek,
-        .datepanel .monthName,
-        .datepanel .dayOfMonth {
+        #dialog .datepanel .dayOfWeek,
+        #dialog .datepanel .monthName,
+        #dialog .datepanel .dayOfMonth {
             color:#e1e1e1;
 
         }
-        .datepanel .dayOfWeek {
+        #dialog .datepanel .dayOfWeek {
             @apply(--paper-font-headline);
             background-color:#00796b;
         }
 
-        .datepanel .monthName {
+        #dialog .datepanel .monthName {
             @apply(--paper-font-headline);
             padding-top:2.0rem;
             color:#e1e1e1;
             text-transform: uppercase;
         }
 
-        .datepanel .dayOfMonth {
+        #dialog .datepanel .dayOfMonth {
             @apply(--paper-font-display4);
         }
 
-        .datepanel .year {
+        #dialog .datepanel .year {
             @apply(--paper-font-headline);
             color:rgba(255,255,255,0.5);
         }
-        #container {
+        #dialog #container {
             @apply(--layout-horizontal);
             background-color: white;
             padding:0px;
             margin:0px;
             width: 624px;
         }
-        cg-date-picker {
+        #dialog cg-date-picker {
             @apply(--layout-flex);
+        }
+        #dialog {
+            overflow: visible;
         }
     </style>
     <template>

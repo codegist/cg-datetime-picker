@@ -8,21 +8,21 @@
 
 <dom-module id="cg-datetime-picker-dialog">
     <style>
-        .buttons {
+        #dialog .buttons {
             background-color: #009688;
             padding: 0.7rem;
             line-height: 1.0rem;
         }
-        .buttons paper-button {
+        #dialog .buttons paper-button {
             font-size: 1.2rem;
             color: #ffffff;
         }
-        .header {
+        #dialog .header {
             @apply(--paper-font-headline);
             background-color:#00796b;
             color:#e1e1e1;
         }
-        #container {
+        #dialog #container {
             background-color: white;
             @apply(--layout-vertical);
             padding:0px;
@@ -30,20 +30,23 @@
             width: 624px;
             /*height: 294px;*/
         }
-        .header {
+        #dialog .header {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
+        }
+        #dialog {
+            overflow: visible;
         }
     </style>
     <template>
         <paper-dialog id="dialog" modal>
             <div layout vertical id="container">
                 <div class="header">
-                    <span>[[headingLabel]]</span>&nbsp;
-                    <span>[[_monthShortName]]</span>&nbsp;
-                    <span>[[_dayOfMonth]]</span>&nbsp;
-                    <span>[[_formattedYear]]</span>,&nbsp;
-                    <span>[[_hours]]</span>:<span>[[_minutes]]</span>
+                    <span>[[headingLabel]]</span><span>&nbsp;</span>
+                    <span>[[_monthShortName]]</span><span>&nbsp;</span>
+                    <span>[[_dayOfMonth]]</span><span>&nbsp;</span>
+                    <span>[[_formattedYear]]</span><span>,&nbsp;</span>
+                    <span>[[_hours]]</span><span>:</span><span>[[_minutes]]</span>
                 </div>
                 <div flex>
                     <cg-datetime-picker flex datetime="{{_datetime}}" id="datetimePicker" on-date-changed="onDateChange"></cg-datetime-picker>
