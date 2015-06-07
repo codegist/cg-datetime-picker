@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../cg-utils/cg-utilities-behavior.html">
 
 <dom-module id="cg-base-value-picker">
     <style>
@@ -52,9 +53,9 @@
     </style>
     <template>
         <div on-tap="_selectvalue" id="container">
-            <div class="values" id="scroller" style$="[[_computeScrollerStyle(height)]]">
+            <div class="values" id="scroller" style$="[[style('height', height)]]">
                 <template is="dom-repeat" items="{{_values}}">
-                    <div class$="[[_computeContentClass(item, _currentvalue)]]" data-value$="[[item.n]]">
+                    <div class$="[[ifEqualsTo(item.n, _currentvalue, 'value selected', 'value')]]" data-value$="[[item.n]]">
                         <div tabindex="0">[[item.name]]</div>
                     </div>
                 </template>
@@ -69,8 +70,8 @@
             min:Number,
             max:Number,
             height:{
-                type:Number,
-                value:200
+                type:String,
+                value:"200px"
             },
             displayName:Function,
             currentValue:Function,
@@ -81,6 +82,7 @@
                 observer:'datetimeChanged'
             },
         },
+        behaviors:[CG.UtilitiesBehavior],
         _values:null,
         _currentvalue:null,
         ready: function(){
@@ -96,16 +98,6 @@
         datetimeChanged: function(){
             this._currentvalue = this.currentValue(this.datetime);
             this.scrollToSelection();
-        },
-        _computeScrollerStyle: function(height) {
-            return "height:" + parseInt(height || this.properties.height.value) + "px";
-        },
-        _computeContentClass: function(item, currentvalue) {
-            var className = 'value';
-            if (item.n == currentvalue) {
-                className += ' selected';
-            }
-            return className;
         },
         scrollToSelection:function(now){
             this.async(this._scrollToSelection,now === true ? undefined : 1000);

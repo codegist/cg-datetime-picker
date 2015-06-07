@@ -5,6 +5,7 @@
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
+<link rel="import" href="../cg-utils/cg-utilities-behavior.html">
 <link rel="import" href="cg-year-picker.html">
 <link rel="import" href="cg-month-picker.html">
 
@@ -109,7 +110,7 @@
                                 <div class="day title">[[name]]</div>
                             </template>
                             <template is="dom-repeat" items="[[month.days]]" as="day">
-                                <div tabindex="0" class$="[[_computeDayClasses(day, month, _currentDay, _currentMonth, _currentYear)]]"
+                                <div tabindex="0" class$="[[ifEqualsTo(day.n, _currentDay, month.number, _currentMonth, month.year, _currentYear, 'day selected', 'day')]]"
                                      data-date$="[[day.n]]" data-month$="[[month.number]]" data-year$="[[month.year]]">
                                     <span class="day-num">[[day.day]]</span>
                                 </div>
@@ -144,6 +145,7 @@
                 observer:'_pickerDatetimeChanged'
             },
         },
+        behaviors:[CG.UtilitiesBehavior],
         _currentYear : 0,
         _currentMonth : 0,
         _currentDay : 0,
@@ -159,13 +161,6 @@
             this.datetime = new Date(this._pickerDatetime.getFullYear(), this._pickerDatetime.getMonth(), 1,
                     dt.getHours(), dt.getMinutes(), dt.getSeconds());
             this.fire("date-changed", this.datetime);
-        },
-        _computeDayClasses:function(day, month, currentDay, currentMonth, currentYear){
-            var classes = "day";
-            if(day && day.n == currentDay && month.number == currentMonth && month.year == currentYear)  {
-                classes += " selected";
-            }
-            return classes;
         },
         _yearPicker:function(e){
             this.$.yearPicker.scrollToSelection(true);
@@ -269,8 +264,8 @@
             this.async(this._setPickerHeight, 50);
         },
         _setPickerHeight:function(){
-            this.$.monthPicker.height = this.$.monthCollapse.clientHeight;
-            this.$.yearPicker.height = this.$.monthCollapse.clientHeight;
+            this.$.monthPicker.height = this.$.monthCollapse.clientHeight + "px";
+            this.$.yearPicker.height = this.$.monthCollapse.clientHeight + "px";
         },
     });
 </script>
