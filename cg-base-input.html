@@ -47,10 +47,6 @@
                 notify:true,
                 observer:'datetimeChanged'
             },
-            backdrop:{
-                type:Boolean,
-                notify:true,
-            },
             formattedDate:{
                 type: String,
                 computed:'formatDate(datetime, dateFormat)'
@@ -64,7 +60,7 @@
             this.$.picker.open(this._pickerDatetime, function(e){
                 this.datetime = e.detail;
                 this.fire("date-changed", this.datetime);
-            }.bind(this), this.backdrop);
+            }.bind(this));
         },
         formatDate:function(date, format){
             return date ? this.dateFormat.format(date) : undefined;
