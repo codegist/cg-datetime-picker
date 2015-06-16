@@ -8,6 +8,9 @@
 
 <dom-module id="cg-date-picker-dialog">
     <style>
+        :host {
+            display: block;
+        }
         #dialog .buttons {
             background-color: white;
             padding: 0.7rem;
@@ -64,7 +67,7 @@
             @apply(--layout-flex);
         }
         #dialog {
-            overflow: v;
+            overflow: visible;
         }
     </style>
     <template>

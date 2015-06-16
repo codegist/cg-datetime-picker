@@ -8,6 +8,9 @@
 
 <dom-module id="cg-datetime-picker-dialog">
     <style>
+        :host {
+            display: block;
+        }
         .buttons {
             background-color: #009688;
             padding: 0.7rem;
@@ -23,7 +26,7 @@
             color:#e1e1e1;
         }
         #dialog #container {
-            background-color: white;
+            /*background-color: white;*/
             @apply(--layout-vertical);
             padding:0px;
             margin:0px;

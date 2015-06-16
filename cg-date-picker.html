@@ -5,7 +5,7 @@
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../font-awesome-polymer-icons/fa-icons.html">
-<link rel="import" href="../cg-utils/cg-utilities-behavior.html">
+<link rel="import" href="../cg-behaviors/cg-base-behavior.html">
 <link rel="import" href="cg-year-picker.html">
 <link rel="import" href="cg-month-picker.html">
 
@@ -145,7 +145,7 @@
                 observer:'_pickerDatetimeChanged'
             },
         },
-        behaviors:[CG.UtilitiesBehavior],
+        behaviors:[CG.BaseBehavior],
         _currentYear : 0,
         _currentMonth : 0,
         _currentDay : 0,

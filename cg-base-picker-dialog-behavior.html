@@ -1,13 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../cg-base/cg-base-behavior.html">
+<link rel="import" href="../cg-behaviors/cg-base-behavior.html">
 
 <script>
     var BasePickerDialogBehaviorImpl = {
         properties:{
-            listensTo:{
-                type:Array,
-                value:[]
-            },
             locale: {
                 value:window.navigator.userLanguage || window.navigator.language,
                 observer:'localeChanged'
