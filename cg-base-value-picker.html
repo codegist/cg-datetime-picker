@@ -99,24 +99,16 @@
             this._currentvalue = this.currentValue(this.datetime);
             this.scrollToSelection();
         },
-        scrollToSelection:function(now){
-            this.async(this._scrollToSelection,now === true ? undefined : 1000);
+        scrollToSelection:function(){
+            this.doWhenConditionIsMet(this._scrollToSelection, function(){return this.$.scroller.offsetWidth != 0}, 250);
         },
-        _scrollToSelection:function(times){
+        _scrollToSelection:function(){
             var selected = this.$.container.querySelector("div.value[data-value='" + this._currentvalue + "']");
             if(selected) {
                 var scrollTop = this.$.scroller.scrollTop;
                 var scrollBottom = scrollTop + this.$.scroller.clientHeight;
                 var selectedTop = selected.offsetTop;
                 var selectedBottom = selectedTop + selected.clientHeight;
-
-                // to cater for when dom sizing is not ready due to animation or other
-                if((scrollTop + scrollBottom + selectedTop + selectedBottom) == 0 && (!times || times > 1)) {
-                    return this.async(function(){
-                        var t = typeof times === "number" ? --times : 10;
-                        this._scrollToSelection(t);
-                    }.bind(this), null, 30);
-                }
 
                 // TODO: This is essentially a interstection detector. Clean that ugly condition to something sound.
                 if(
