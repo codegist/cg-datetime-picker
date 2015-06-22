@@ -41,7 +41,7 @@
         },
         behaviors:[CG.BaseBehavior, CG.ApplicationContextBehavior, CG.ValidatableBehavior],
         ready:function(){
-            this.$.input.$.picker = this.context.dateDialog || this.importHref(this.resolveUrl("cg-date-picker-dialog.html"), function(){
+            this.$.input.$.picker = this.get("config.dateDialog", this.context) || this.importHref(this.resolveUrl("cg-date-picker-dialog.html"), function(){
                 this.$.input.$.picker = Polymer.dom(this.$.input.root).appendChild(document.createElement('cg-date-picker-dialog'));
             });
         },
